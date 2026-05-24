@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Twitter Clone",
-  description: "Twitter Clone by EgbonTech",
+  title: "BinghamHub - University Social Network",
+  description: "BinghamHub: A private social network for Bingham University students and staff",
 };
 
 export default function RootLayout({

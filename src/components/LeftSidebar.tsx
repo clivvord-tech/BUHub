@@ -2,7 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { BiBell, BiEnvelope } from 'react-icons/bi'
 import { BsPeople } from 'react-icons/bs'
-import { FaFeather, FaRegUser, FaXTwitter } from 'react-icons/fa6'
+import { FaFeather, FaRegUser } from 'react-icons/fa6'
 import { GoHomeFill } from 'react-icons/go'
 import { IoSearchOutline } from 'react-icons/io5'
 import { TbDotsCircleHorizontal } from 'react-icons/tb'
@@ -12,9 +12,9 @@ import LogoutButton from './LogoutButton'
 export default function LeftSidebar() {
   return (
     <aside className='fixed left-0 top-0 w-[50px] lg:w-[400px] p-1 lg:p-4 h-screen lg:pl-30'>
-        <p className='mb-6 text-white'>
-            <FaXTwitter size={30}/>
-        </p>
+        <div className='mb-6 text-primary flex items-center justify-center lg:justify-start'>
+            <div className='font-bold text-2xl'>BH</div>
+        </div>
         <div className='space-y-2'>
             <Link href="#"className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
             <GoHomeFill size={30}/>
@@ -56,7 +56,7 @@ export default function LeftSidebar() {
           href="#"
           className="text-white flex items-center lg:gap-3 hover:bg-hover p-3 rounded-full"
         >
-          <FaXTwitter size={30} />
+          <FaFeather size={30} />
           <span className="hidden lg:inline text-xl">Premium</span>
         </Link>
 

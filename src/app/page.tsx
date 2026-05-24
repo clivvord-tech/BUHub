@@ -41,8 +41,12 @@ export default function Home() {
   return (
     <div className="h-screen flex items-center justify-center">
       <div className="max-w-[300px] w-[95%] py-12 rounded-lg">
-        <h2 className="font-bold text-3xl text-primary-text">Sign in to X</h2>
-        <button className="bg-white w-full mt-8 h-10 flex justify-center items-center gap-2 cursor-pointer hover:bg-gray-200 rounded-full">
+        <div className="mb-8">
+          <h1 className="font-bold text-4xl text-white mb-2">BinghamHub</h1>
+          <p className="text-secondary-text text-sm">Bingham University's Community</p>
+        </div>
+        <h2 className="font-bold text-2xl text-primary-text mb-6">Sign in to your account</h2>
+        <button className="bg-white w-full h-10 flex justify-center items-center gap-2 cursor-pointer hover:bg-gray-200 rounded-full">
           <Image
             src="/images/google-icon.png"
             alt="google-icon"
