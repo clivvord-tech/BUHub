@@ -64,8 +64,10 @@ export default function LeftSidebar() {
               <span className='hidden lg:inline text-xs ml-auto bg-border px-2 py-1 rounded'>Soon</span>
             </div>
         </div>
-       <LogoutButton/>
-      <Profile/>
+       <div className='absolute bottom-0 left-0 w-full p-4'>
+         <LogoutButton/>
+         <Profile/>
+       </div>
     </aside>
   )
 }
