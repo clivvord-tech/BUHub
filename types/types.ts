@@ -18,7 +18,7 @@ export type Tweet = {
   content: string;
   image_url: string;
   created_at: string;
-  image_Path: string;
+  image_path: string;
   profiles: {
     id: string;
     avatar_url: string;
