@@ -55,7 +55,7 @@ export default function Page() {
 
       const { error: insertError } = await supabase
         .from("profiles")
-        .insert(profileData);
+        .upsert(profileData, { onConflict: "id" });
 
       if (insertError) {
         setMessage(insertError.message);
