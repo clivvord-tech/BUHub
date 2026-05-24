@@ -4,6 +4,7 @@ import React from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { useGetUser } from "../../custom-hooks/useGetUser";
 import { SpinnerCircularFixed } from "spinners-react";
+import OwnerBadge from "./OwnerBadge";
 
 export default function Profile() {
   const { session, loading, profile, gettingSession } = useGetUser();
@@ -35,7 +36,10 @@ export default function Profile() {
           />
         )}
         <div className="hidden lg:block">
-          <p className="font-semibold">{profile?.name}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-semibold">{profile?.name}</p>
+            <OwnerBadge isOwner={profile?.is_owner} size="sm" />
+          </div>
           <p className="text-secondary-text font-light">@{profile?.username}</p>
         </div>
       </div>

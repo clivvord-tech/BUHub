@@ -6,6 +6,7 @@ import { useGetComments } from "../../custom-hooks/useComment";
 import { Comment } from "../../types/types";
 import moment from "moment";
 import CommentActions from "./CommentActions";
+import OwnerBadge from "./OwnerBadge";
 
 export default function Comments({ tweetId }: { tweetId: string }) {
   const { error, isError, isLoading, data: comments } = useGetComments(tweetId);
@@ -33,6 +34,7 @@ export default function Comments({ tweetId }: { tweetId: string }) {
                   <span className="text-white font-bold">
                     {comment.profiles.name}
                   </span>
+                  <OwnerBadge isOwner={comment.profiles.is_owner} size="sm" />
                   <span className="text-secondary-text">
                     @{comment.profiles.username}
                   </span>

@@ -8,6 +8,7 @@ import { Tweet } from "../../types/types";
 import moment from "moment";
 import TweetActions from "./TweetActions";
 import { SpinnerCircularFixed } from "spinners-react";
+import OwnerBadge from "./OwnerBadge";
 
 export default function Posts() {
   const { isLoading, isError, error, data: tweets } = useGetTweets();
@@ -40,6 +41,7 @@ export default function Posts() {
                   <span className="text-white font-bold">
                     {tweet.profiles.name}
                   </span>
+                  <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
                   <span className="text-secondary-text">
                     @{tweet.profiles.username}
                   </span>
