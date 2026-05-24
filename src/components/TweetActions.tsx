@@ -51,7 +51,7 @@ export default function TweetActions({
     <div className="flex justify-between my-4">
       <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
         <FaRegComment />
-        <span className="text-sm">{commentsCount}</span>
+        <span className="text-sm">{commentsCount || 0}</span>
       </div>
       {creatorId === userId ? (
         <button
@@ -61,17 +61,15 @@ export default function TweetActions({
           <FaTrash />
         </button>
       ) : (
-        <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
+        <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer opacity-50">
           <FiRepeat />
-          <span className="text-sm">7.5k</span>
         </div>
       )}
       <LikeButton tweetId={tweetId} userId={userId} session={session}/>
-      <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
+      <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer opacity-50">
         <IoIosStats />
-        <span className="text-sm">5k</span>
       </div>
-      <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
+      <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer opacity-50">
         <FaRegBookmark size={20} />
       </div>
     </div>

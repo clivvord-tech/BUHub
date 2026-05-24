@@ -1,6 +1,7 @@
 import Comments from "@/components/Comments";
 import GoBackButton from "@/components/GoBackButton";
 import ReplyPost from "@/components/ReplyPost";
+import OwnerBadge from "@/components/OwnerBadge";
 import Image from "next/image";
 import React from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -13,8 +14,8 @@ import TweetActions from "@/components/TweetActions";
 
 const getTweet = async (id: string) => {
   const { error, data } = await supabase
-    .from("tweets")
-    .select("*,profiles(id,username,avatar_url,name)")
+    .from("posts")
+    .select("*,profiles(id,username,avatar_url,name,is_owner,role)")
     .eq("id", id)
     .single();
 
@@ -53,6 +54,7 @@ export default async function Page({ params }: { params: Promise<{ postid: strin
               <span className="text-white font-bold">
                 {tweet.profiles.name}
               </span>
+              <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
               <span className="text-secondary-text">
                 @{tweet.profiles.username}
               </span>
@@ -79,7 +81,7 @@ export default async function Page({ params }: { params: Promise<{ postid: strin
           <TweetActions
             creatorId={tweet.profiles.id}
             tweetId={tweet.id}
-            imagePath={tweet.image_Path}
+            imagePath={tweet.image_path}
             isTweetPostViewPage={true}
           />
         </div>

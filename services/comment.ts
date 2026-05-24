@@ -22,7 +22,7 @@ export const createComment = async (
 export const getComments = async (tweetId: string) => {
   const { data, error } = await supabase
     .from("comments")
-    .select("*,profiles (id,name,username,avatar_url)")
+    .select("*,profiles (id,name,username,avatar_url,is_owner,role)")
     .eq("tweet_id", tweetId)
     .order("created_at", { ascending: false });
 

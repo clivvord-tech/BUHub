@@ -38,11 +38,8 @@ export default function Home() {
       setMessage(result.error);
       setMessageType("error");
     } else {
-      setMessage("✓ Signup successful! Redirecting to profile setup...");
+      setMessage("✓ Signup successful! Check your email to confirm your account, then you can log in.");
       setMessageType("success");
-      setTimeout(() => {
-        router.replace("/auth/callback");
-      }, 2000);
     }
     setIsLoading(false);
   };
