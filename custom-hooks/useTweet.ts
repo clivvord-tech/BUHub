@@ -1,8 +1,11 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import { createTweet, deleteTweet, getTweets } from "../services/tweet";
+import { getPostRateLimiter } from "../services/rateLimiting";
 
 export const usePostTweet = () => {
   const queryClient = useQueryClient();
+  const rateLimiter = getPostRateLimiter();
+
   return useMutation({
     mutationFn: ({
       userId,
@@ -12,17 +15,42 @@ export const usePostTweet = () => {
       userId: string;
       content: string | null;
       tweetImage: File | null;
-    }) => createTweet(userId, content, tweetImage),
+    }) => {
+      // Check rate limit
+      if (!rateLimiter.isAllowed(userId)) {
+        throw new Error(
+          `Too many posts. Please wait before posting again. (${rateLimiter.getRemainingRequests(userId)} remaining)`
+        );
+      }
+      return createTweet(userId, content, tweetImage);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tweets"] });
     },
   });
 };
 
-export const useGetTweets = () => {
-  return useQuery({
+/**
+ * Get tweets with infinite scroll support
+ */
+export const useGetTweets = (pageSize: number = 10) => {
+  return useInfiniteQuery({
     queryKey: ["tweets"],
-    queryFn: getTweets,
+    queryFn: ({ pageParam = 0 }) => getTweets(pageParam, pageSize),
+    getNextPageParam: (lastPage) =>
+      lastPage.hasMore ? lastPage.page + 1 : undefined,
+    initialPageParam: 0,
+  });
+};
+
+/**
+ * Legacy hook - kept for backward compatibility
+ * Use useGetTweets() for new code
+ */
+export const useGetAllTweets = () => {
+  return useQuery({
+    queryKey: ["tweets-legacy"],
+    queryFn: () => getTweets(0, 100), // Get first 100
   });
 };
 
