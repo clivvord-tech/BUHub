@@ -66,7 +66,7 @@ export default function TweetActions({
           <span className="text-sm">7.5k</span>
         </div>
       )}
-      <LikeButton tweetId={tweetId}userId={userId}session={session}/>
+      <LikeButton tweetId={tweetId} userId={userId} session={session}/>
       <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
         <IoIosStats />
         <span className="text-sm">5k</span>

@@ -7,6 +7,8 @@ type Profile = {
   avatar_url: string;
   email: string;
   name: string;
+  is_owner: boolean;
+  role: string;
 };
 
 export const useGetUser = () => {

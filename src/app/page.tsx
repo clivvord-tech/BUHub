@@ -77,7 +77,7 @@ export default function Home() {
           <input
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            type="text"
+            type="password"
             placeholder="Password"
             className="w-full bg-background outline-none rounded-md p-4 placeholder-secondary-text border border-border text-white"
           />
