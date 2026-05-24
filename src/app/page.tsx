@@ -46,21 +46,6 @@ export default function Home() {
           <p className="text-secondary-text text-sm">Bingham University's Community</p>
         </div>
         <h2 className="font-bold text-2xl text-primary-text mb-6">Sign in to your account</h2>
-        <button className="bg-white w-full h-10 flex justify-center items-center gap-2 cursor-pointer hover:bg-gray-200 rounded-full">
-          <Image
-            src="/images/google-icon.png"
-            alt="google-icon"
-            width={470}
-            height={470}
-            className="w-6 h-6 object-cover"
-          />
-          <span>Sign in with google</span>
-        </button>
-        <div className="flex items-center my-6">
-          <div className="flex-grow h-px bg-border"></div>
-          <span className="mx-4 text-md text-primary-text">or</span>
-          <div className="flex-grow h-px bg-border"></div>
-        </div>
          {message && (
           <p className="bg-primary py-1 mb-4 font-semibold text-center">
             {message}
