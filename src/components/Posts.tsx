@@ -62,18 +62,17 @@ export default function Posts() {
 
   return (
     <div>
-      {tweets.map((tweet: Tweet) => {
-        return (
-          <div key={tweet.id}>
-            {tweet.is_pinned && (
-              <div className="px-4 pt-2 flex items-center gap-2 text-secondary-text text-sm">
-                <BsPinFill className="text-primary" />
-                <span>Pinned post</span>
-              </div>
-            )}
-            <div
-              className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
-            >
+      {tweets.map((tweet: Tweet) => (
+        <div key={tweet.id}>
+          {tweet.is_pinned && (
+            <div className="px-4 pt-2 flex items-center gap-2 text-secondary-text text-sm">
+              <BsPinFill className="text-primary" />
+              <span>Pinned post</span>
+            </div>
+          )}
+          <div
+            className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
+          >
             <Link href={`/home/profile/${tweet.profiles.username}`}>
               <Image
                 src={tweet.profiles.avatar_url}
@@ -127,8 +126,8 @@ export default function Posts() {
               />
             </div>
           </div>
-        );
-      })}
+        </div>
+      ))}
 
       {/* Infinite scroll trigger */}
       <div ref={observerTarget} className="py-8 text-center">
