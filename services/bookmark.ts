@@ -72,14 +72,19 @@ export const getBookmarks = async () => {
 
   if (error) return { error: error.message };
   
-  // Transform nested profiles from array to single object
-  const transformedData = data?.map(bookmark => ({
-    ...bookmark,
-    posts: bookmark.posts ? {
-      ...bookmark.posts,
-      profiles: Array.isArray(bookmark.posts.profiles) ? bookmark.posts.profiles[0] : bookmark.posts.profiles
-    } : null
-  }));
+  // Transform nested data - posts and profiles come as arrays
+  const transformedData = data?.map(bookmark => {
+    const post = Array.isArray(bookmark.posts) ? bookmark.posts[0] : bookmark.posts;
+    if (!post) return { ...bookmark, posts: null };
+    
+    return {
+      ...bookmark,
+      posts: {
+        ...post,
+        profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
+      }
+    };
+  });
   
   return { data: transformedData };
 };
