@@ -69,6 +69,7 @@ export const getTweets = async (page: number = 0, pageSize: number = 10) => {
       `*,profiles(id,username,name,avatar_url,is_owner,role)`,
       { count: "exact" }
     )
+    .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .range(start, end);
 

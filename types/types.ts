@@ -19,6 +19,7 @@ export type Tweet = {
   image_url: string;
   created_at: string;
   image_path: string;
+  is_pinned?: boolean;
   profiles: {
     id: string;
     avatar_url: string;
@@ -56,7 +57,7 @@ export type Notification = {
   id: string;
   user_id: string;
   actor_id: string;
-  type: 'like' | 'comment' | 'follow';
+  type: 'like' | 'comment' | 'follow' | 'repost';
   post_id?: string;
   comment_id?: string;
   is_read: boolean;

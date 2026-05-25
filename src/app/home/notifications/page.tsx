@@ -95,6 +95,11 @@ export default function NotificationsPage() {
                     <span className="text-green-500 text-xl">👤</span>
                   </div>
                 )}
+                {notification.type === "repost" && (
+                  <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <span className="text-green-500 text-xl">🔁</span>
+                  </div>
+                )}
               </div>
 
               <Image
@@ -118,6 +123,7 @@ export default function NotificationsPage() {
                   {notification.type === "like" && "liked your post"}
                   {notification.type === "comment" && "commented on your post"}
                   {notification.type === "follow" && "followed you"}
+                  {notification.type === "repost" && "reposted your post"}
                 </p>
 
                 {notification.post?.content && (

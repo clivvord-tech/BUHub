@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useRef } from "react";
-import { BsThreeDots } from "react-icons/bs";
+import { BsThreeDots, BsPinFill } from "react-icons/bs";
 import { useGetTweets } from "../../custom-hooks/useTweet";
 import { Tweet } from "../../types/types";
 import moment from "moment";
@@ -64,10 +64,16 @@ export default function Posts() {
     <div>
       {tweets.map((tweet: Tweet) => {
         return (
-          <div
-            key={tweet.id}
-            className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
-          >
+          <div key={tweet.id}>
+            {tweet.is_pinned && (
+              <div className="px-4 pt-2 flex items-center gap-2 text-secondary-text text-sm">
+                <BsPinFill className="text-primary" />
+                <span>Pinned post</span>
+              </div>
+            )}
+            <div
+              className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
+            >
             <Link href={`/home/profile/${tweet.profiles.username}`}>
               <Image
                 src={tweet.profiles.avatar_url}
@@ -117,6 +123,7 @@ export default function Posts() {
                 tweetId={tweet.id}
                 imagePath={tweet.image_path}
                 isTweetPostViewPage={false}
+                isPinned={tweet.is_pinned}
               />
             </div>
           </div>
