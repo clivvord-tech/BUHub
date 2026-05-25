@@ -12,6 +12,7 @@ import { IoMdSettings } from 'react-icons/io'
 import { IoStatsChart } from 'react-icons/io5'
 import Profile from './Profile'
 import { useGetUser } from '../../custom-hooks/useGetUser'
+import { getUnreadNotificationCount } from '../../services/notification'
 
 export default function LeftSidebar() {
   const [unreadCount, setUnreadCount] = useState(0);
