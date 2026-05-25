@@ -14,6 +14,7 @@ export default function SettingsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   useEffect(() => {
     loadSettings();
@@ -139,9 +140,19 @@ export default function SettingsPage() {
         <div>
           <h2 className="text-white font-bold text-lg mb-4">Account</h2>
           <div className="py-3 border-b border-border">
-            <DeleteAccountModal />
+            <button
+              onClick={() => setIsDeleteModalOpen(true)}
+              className="text-red-500 font-medium hover:text-red-400 transition-colors"
+            >
+              Delete Account
+            </button>
           </div>
         </div>
+
+        <DeleteAccountModal 
+          isOpen={isDeleteModalOpen} 
+          onClose={() => setIsDeleteModalOpen(false)} 
+        />
 
         {/* Save Button */}
         <button
