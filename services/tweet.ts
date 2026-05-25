@@ -63,10 +63,10 @@ export const getTweets = async (page: number = 0, pageSize: number = 10) => {
   const start = page * pageSize;
   const end = start + pageSize - 1;
 
-  const { error, data, count } = await supabase
+  const { data, error } = await supabase
     .from("posts")
     .select(
-      `id,content,image_url,image_path,created_at,user_id,is_pinned,profiles!inner(id,username,name,avatar_url,is_owner,role)`,
+      `id,content,image_url,image_path,created_at,user_id,is_pinned,profiles!posts_user_id_fkey(id,username,name,avatar_url,is_owner,role)`,
       { count: "exact" }
     )
     .order("is_pinned", { ascending: false })
@@ -78,8 +78,14 @@ export const getTweets = async (page: number = 0, pageSize: number = 10) => {
     throw new Error("Failed to load posts");
   }
 
+  // Transform profiles from array to single object
+  const transformedData = data?.map(post => ({
+    ...post,
+    profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
+  }));
+
   return {
-    tweets: data || [],
+    tweets: transformedData || [],
     total: count || 0,
     page,
     pageSize,

@@ -49,7 +49,7 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
       created_at,
       user_id,
       is_pinned,
-      profiles!inner(
+      profiles!posts_user_id_fkey(
         id,
         username,
         name,
@@ -64,7 +64,14 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
     .range(from, to);
 
   if (error) return { error: error.message };
-  return { data };
+  
+  // Transform profiles from array to single object
+  const transformedData = data?.map(post => ({
+    ...post,
+    profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
+  }));
+  
+  return { data: transformedData };
 };
 
 export const updateUserProfile = async (updates: {

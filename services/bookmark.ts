@@ -50,14 +50,14 @@ export const getBookmarks = async () => {
       id,
       created_at,
       tweet_id,
-      posts!inner(
+      posts!bookmarks_tweet_id_fkey(
         id,
         content,
         image_url,
         image_path,
         created_at,
         is_pinned,
-        profiles!inner(
+        profiles!posts_user_id_fkey(
           id,
           username,
           name,
@@ -71,5 +71,15 @@ export const getBookmarks = async () => {
     .order("created_at", { ascending: false });
 
   if (error) return { error: error.message };
-  return { data };
+  
+  // Transform nested profiles from array to single object
+  const transformedData = data?.map(bookmark => ({
+    ...bookmark,
+    posts: bookmark.posts ? {
+      ...bookmark.posts,
+      profiles: Array.isArray(bookmark.posts.profiles) ? bookmark.posts.profiles[0] : bookmark.posts.profiles
+    } : null
+  }));
+  
+  return { data: transformedData };
 };

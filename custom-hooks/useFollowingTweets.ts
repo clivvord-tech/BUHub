@@ -24,7 +24,7 @@ const getFollowingTweets = async (pageParam: number) => {
     .from("posts")
     .select(`
       id,content,image_url,image_path,created_at,user_id,is_pinned,
-      profiles!inner(id, username, avatar_url, name, is_owner, role)
+      profiles!posts_user_id_fkey(id, username, avatar_url, name, is_owner, role)
     `)
     .in("user_id", followingIds)
     .order("created_at", { ascending: false })
@@ -32,8 +32,14 @@ const getFollowingTweets = async (pageParam: number) => {
 
   if (error) throw error;
 
+  // Transform profiles from array to single object
+  const transformedData = data?.map(post => ({
+    ...post,
+    profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
+  }));
+
   return {
-    tweets: data,
+    tweets: transformedData,
     nextPage: data.length === 10 ? pageParam + 1 : null,
   };
 };
