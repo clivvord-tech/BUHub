@@ -63,7 +63,7 @@ export const getTweets = async (page: number = 0, pageSize: number = 10) => {
   const start = page * pageSize;
   const end = start + pageSize - 1;
 
-  const { data, error } = await supabase
+  const { data, error, count } = await supabase
     .from("posts")
     .select(
       `id,content,image_url,image_path,created_at,user_id,is_pinned,profiles!posts_user_id_fkey(id,username,name,avatar_url,is_owner,role)`,
