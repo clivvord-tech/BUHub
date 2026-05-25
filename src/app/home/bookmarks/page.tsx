@@ -114,6 +114,7 @@ export default function BookmarksPage() {
                     tweetId={post.id}
                     imagePath={post.image_path || ""}
                     isTweetPostViewPage={false}
+                    isPinned={post.is_pinned}
                   />
                 </div>
               </div>

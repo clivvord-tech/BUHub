@@ -50,17 +50,20 @@ export const getBookmarks = async () => {
       id,
       created_at,
       tweet_id,
-      posts(
+      posts!inner(
         id,
         content,
         image_url,
+        image_path,
         created_at,
-        profiles(
+        is_pinned,
+        profiles!inner(
           id,
           username,
           name,
           avatar_url,
-          is_owner
+          is_owner,
+          role
         )
       )
     `)

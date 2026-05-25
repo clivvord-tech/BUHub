@@ -125,6 +125,7 @@ export default function FollowingPosts() {
                 tweetId={tweet.id}
                 imagePath={tweet.image_path}
                 isTweetPostViewPage={false}
+                isPinned={tweet.is_pinned}
               />
             </div>
           </div>
