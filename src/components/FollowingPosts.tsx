@@ -58,12 +58,12 @@ export default function FollowingPosts() {
         <p className="text-secondary-text mb-4">
           Follow other users to see their posts here
         </p>
-        <Link
-          href="/home"
+        <button
+          onClick={() => window.location.href = '/home'}
           className="text-primary hover:underline"
         >
           Discover users in the For You feed
-        </Link>
+        </button>
       </div>
     );
   }

@@ -37,11 +37,10 @@ export default function LeftSidebar() {
               <span className='hidden lg:inline text-xl font-bold'>Home</span>
             </Link>
 
-            <div className='text-secondary-text flex items-center lg:gap-3 p-3 rounded-full opacity-50 cursor-not-allowed' title='Coming Soon'>
+            <Link href="/home/explore" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
               <IoSearchOutline size={30} />
               <span className='hidden lg:inline text-xl'>Explore</span>
-              <span className='hidden lg:inline text-xs ml-auto bg-border px-2 py-1 rounded'>Soon</span>
-            </div>
+            </Link>
 
             <Link href="/home/notifications" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover relative'>
               <div className='relative'>

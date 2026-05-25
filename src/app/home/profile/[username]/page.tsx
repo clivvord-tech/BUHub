@@ -9,6 +9,7 @@ import { IoArrowBack } from "react-icons/io5";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "@/components/OwnerBadge";
 import TweetActions from "@/components/TweetActions";
+import EditProfileModal from "@/components/EditProfileModal";
 import Link from "next/link";
 import moment from "moment";
 import { useGetUser } from "../../../../../custom-hooks/useGetUser";
@@ -24,6 +25,7 @@ export default function ProfilePage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const isOwnProfile = currentUser?.id === profile?.id;
 
@@ -128,7 +130,10 @@ export default function ProfilePage() {
                 {isFollowLoading ? "..." : isFollowing ? "Following" : "Follow"}
               </button>
             ) : (
-              <button className="mt-16 px-6 py-2 rounded-full font-bold bg-transparent border border-border text-white hover:bg-hover transition-all opacity-50 cursor-not-allowed" disabled title="Coming Soon">
+              <button 
+                onClick={() => setIsEditModalOpen(true)}
+                className="mt-16 px-6 py-2 rounded-full font-bold bg-transparent border border-border text-white hover:bg-hover transition-all"
+              >
                 Edit profile
               </button>
             )}
@@ -231,6 +236,17 @@ export default function ProfilePage() {
           ))
         )}
       </div>
+
+      <EditProfileModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        profile={{
+          name: profile.name,
+          bio: profile.bio,
+          avatar_url: profile.avatar_url,
+        }}
+        onUpdate={loadProfile}
+      />
     </div>
   );
 }
