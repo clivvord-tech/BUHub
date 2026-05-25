@@ -17,7 +17,7 @@ export default function ProfilePage() {
   const params = useParams();
   const router = useRouter();
   const username = params.username as string;
-  const { data: currentUser } = useGetUser();
+  const { profile: currentUser } = useGetUser();
 
   const [profile, setProfile] = useState<ProfileStats | null>(null);
   const [posts, setPosts] = useState<Tweet[]>([]);
@@ -46,7 +46,7 @@ export default function ProfilePage() {
       setPosts(postsResult.data as Tweet[]);
     }
 
-    if (currentUser && currentUser.id !== profileResult.data.id) {
+    if (currentUser?.id && currentUser.id !== profileResult.data.id) {
       const following = await checkIfFollowing(profileResult.data.id);
       setIsFollowing(following);
     }
