@@ -19,6 +19,7 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
   const [tweet, setTweet] = useState<Tweet | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState<string | undefined>();
+  const [postId, setPostId] = useState<string>("");
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -113,7 +114,7 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
             <PostOptionsMenu
               tweetId={tweet.id}
               creatorId={tweet.profiles.id}
-              currentUserId={tweet.user_id}
+              currentUserId={currentUserId}
               imagePath={tweet.image_path}
               isTweetPostViewPage={true}
               creatorUsername={tweet.profiles.username}
