@@ -25,6 +25,7 @@ type TweetActionsProp = {
   isTweetPostViewPage: boolean;
   isPinned?: boolean;
   showOnlyPinDelete?: boolean;
+  showOnlyPin?: boolean;
 };
 
 export default function TweetActions({
@@ -34,6 +35,7 @@ export default function TweetActions({
   isTweetPostViewPage,
   isPinned = false,
   showOnlyPinDelete = false,
+  showOnlyPin = false,
 }: TweetActionsProp) {
   const { mutate } = useDeleteTweet();
   const { session } = useUserSession();
@@ -107,6 +109,20 @@ export default function TweetActions({
       window.location.reload();
     }
   };
+
+  if (showOnlyPin && creatorId === userId) {
+    return (
+      <button
+        onClick={handlePin}
+        className={`flex items-center gap-1 cursor-pointer transition-colors ${
+          pinned ? 'text-primary' : 'text-secondary-text hover:text-primary'
+        }`}
+        title={pinned ? "Unpin from profile" : "Pin to profile"}
+      >
+        {pinned ? <BsPinFill size={16} /> : <BsPin size={16} />}
+      </button>
+    );
+  }
 
   if (showOnlyPinDelete && creatorId === userId) {
     return (

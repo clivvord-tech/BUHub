@@ -96,14 +96,7 @@ export default function Posts() {
                     {moment(tweet.created_at).fromNow()}
                   </span>
                 </div>
-                <TweetActions
-                  creatorId={tweet.profiles.id}
-                  tweetId={tweet.id}
-                  imagePath={tweet.image_path}
-                  isTweetPostViewPage={false}
-                  isPinned={tweet.is_pinned}
-                  showOnlyPinDelete={true}
-                />
+                <BsThreeDots className="text-secondary-text" />
               </div>
               {tweet.content && (
                 <Link
@@ -124,6 +117,13 @@ export default function Posts() {
                   />
                 </Link>
               )}
+              <TweetActions
+                creatorId={tweet.profiles.id}
+                tweetId={tweet.id}
+                imagePath={tweet.image_path}
+                isTweetPostViewPage={false}
+                isPinned={tweet.is_pinned}
+              />
             </div>
           </div>
         </div>

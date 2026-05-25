@@ -6,6 +6,7 @@ import { followUser, unfollowUser, checkIfFollowing } from "../../../../../servi
 import { ProfileStats, Tweet } from "../../../../../types/types";
 import Image from "next/image";
 import { IoArrowBack } from "react-icons/io5";
+import { BsPinFill } from "react-icons/bs";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "@/components/OwnerBadge";
 import TweetActions from "@/components/TweetActions";
@@ -188,10 +189,14 @@ export default function ProfilePage() {
           </div>
         ) : (
           posts.map((tweet) => (
-            <div
-              key={tweet.id}
-              className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
-            >
+            <div key={tweet.id}>
+              {tweet.is_pinned && (
+                <div className="px-4 pt-2 flex items-center gap-2 text-secondary-text text-sm">
+                  <BsPinFill className="text-primary" />
+                  <span>Pinned post</span>
+                </div>
+              )}
+              <div className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors">
               <Image
                 src={tweet.profiles.avatar_url}
                 alt="profile-pic"
@@ -200,11 +205,23 @@ export default function ProfilePage() {
                 className="w-10 h-10 object-cover rounded-full shrink-0"
               />
               <div className="w-full">
-                <div className="flex gap-1 items-center text-sm">
-                  <span className="text-white font-bold">{tweet.profiles.name}</span>
-                  <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
-                  <span className="text-secondary-text">@{tweet.profiles.username}</span>
-                  <span className="text-secondary-text">{moment(tweet.created_at).fromNow()}</span>
+                <div className="flex justify-between">
+                  <div className="flex gap-1 items-center text-sm">
+                    <span className="text-white font-bold">{tweet.profiles.name}</span>
+                    <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
+                    <span className="text-secondary-text">@{tweet.profiles.username}</span>
+                    <span className="text-secondary-text">{moment(tweet.created_at).fromNow()}</span>
+                  </div>
+                  {isOwnProfile && (
+                    <TweetActions
+                      creatorId={tweet.profiles.id}
+                      tweetId={tweet.id}
+                      imagePath={tweet.image_path}
+                      isTweetPostViewPage={false}
+                      isPinned={tweet.is_pinned}
+                      showOnlyPin={true}
+                    />
+                  )}
                 </div>
                 {tweet.content && (
                   <Link
@@ -230,8 +247,10 @@ export default function ProfilePage() {
                   tweetId={tweet.id}
                   imagePath={tweet.image_path}
                   isTweetPostViewPage={false}
+                  isPinned={tweet.is_pinned}
                 />
               </div>
+            </div>
             </div>
           ))
         )}
