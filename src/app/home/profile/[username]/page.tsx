@@ -170,11 +170,9 @@ export default function ProfilePage() {
         <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title="Coming Soon">
           Media
         </button>
-        {isOwnProfile && (
-          <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title="Coming Soon">
-            Likes
-          </button>
-        )}
+        <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title={isOwnProfile ? "Coming Soon" : "This user's likes are private"}>
+          Likes
+        </button>
       </div>
 
       {/* Posts */}
