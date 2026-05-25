@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getUserSettings, updateUserSettings } from "../../../../services/settings";
 import { SpinnerCircularFixed } from "spinners-react";
 import GoBackButton from "@/components/GoBackButton";
+import DeleteAccountModal from "@/components/DeleteAccountModal";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -132,6 +133,13 @@ export default function SettingsPage() {
                 }`}
               />
             </button>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="text-white font-bold text-lg mb-4">Account</h2>
+          <div className="py-3 border-b border-border">
+            <DeleteAccountModal />
           </div>
         </div>
 

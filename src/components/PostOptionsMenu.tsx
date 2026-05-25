@@ -64,6 +64,10 @@ export default function PostOptionsMenu({
 
   const isOwnPost = creatorId === currentUserId;
 
+  if (!isOwnPost) {
+    return null;
+  }
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -75,19 +79,13 @@ export default function PostOptionsMenu({
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-lg z-50">
-          {isOwnPost ? (
-            <button
-              onClick={handleDelete}
-              className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
-            >
-              <FaTrash size={16} />
-              <span className="font-semibold">Delete</span>
-            </button>
-          ) : (
-            <div className="px-4 py-3 text-secondary-text text-sm">
-              No actions available
-            </div>
-          )}
+          <button
+            onClick={handleDelete}
+            className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
+          >
+            <FaTrash size={16} />
+            <span className="font-semibold">Delete</span>
+          </button>
         </div>
       )}
     </div>

@@ -12,6 +12,7 @@ import OwnerBadge from "@/components/OwnerBadge";
 import TweetActions from "@/components/TweetActions";
 import PostOptionsMenu from "@/components/PostOptionsMenu";
 import EditProfileModal from "@/components/EditProfileModal";
+import ImageViewer from "@/components/ImageViewer";
 import Link from "next/link";
 import moment from "moment";
 import { useGetUser } from "../../../../../custom-hooks/useGetUser";
@@ -28,6 +29,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
 
   const isOwnProfile = currentUser?.id === profile?.id;
 
@@ -112,13 +114,15 @@ export default function ProfilePage() {
         <div className="h-40 bg-hover"></div>
         <div className="px-4 pb-4">
           <div className="flex justify-between items-start -mt-16 mb-4">
-            <Image
-              src={profile.avatar_url}
-              alt={profile.name}
-              width={130}
-              height={130}
-              className="w-32 h-32 rounded-full border-4 border-background object-cover"
-            />
+            <button onClick={() => setIsImageViewerOpen(true)} className="hover:brightness-90 transition-all">
+              <Image
+                src={profile.avatar_url}
+                alt={profile.name}
+                width={130}
+                height={130}
+                className="w-32 h-32 rounded-full border-4 border-background object-cover cursor-pointer"
+              />
+            </button>
             {!isOwnProfile ? (
               <button
                 onClick={handleFollow}
@@ -282,6 +286,13 @@ export default function ProfilePage() {
           avatar_url: profile.avatar_url,
         }}
         onUpdate={loadProfile}
+      />
+
+      <ImageViewer
+        isOpen={isImageViewerOpen}
+        onClose={() => setIsImageViewerOpen(false)}
+        imageUrl={profile.avatar_url}
+        name={profile.name}
       />
     </div>
   );

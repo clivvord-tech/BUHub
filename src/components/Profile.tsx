@@ -6,6 +6,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { useGetUser } from "../../custom-hooks/useGetUser";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "./OwnerBadge";
+import LogoutButton from "./LogoutButton";
 import { supabase } from "../../lib/SupabaseClient";
 
 export default function Profile() {
@@ -84,6 +85,9 @@ export default function Profile() {
           <span className="font-bold">{stats.followers}</span>
           <span className="text-secondary-text ml-1">Followers</span>
         </div>
+      </div>
+      <div className="mt-3">
+        <LogoutButton />
       </div>
     </Link>
   );
