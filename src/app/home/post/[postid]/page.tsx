@@ -18,7 +18,13 @@ import { SpinnerCircularFixed } from "spinners-react";
 export default function Page({ params }: { params: Promise<{ postid: string }> }) {
   const [tweet, setTweet] = useState<Tweet | null>(null);
   const [loading, setLoading] = useState(true);
-  const [postId, setPostId] = useState<string>("");
+  const [currentUserId, setCurrentUserId] = useState<string | undefined>();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setCurrentUserId(user?.id);
+    });
+  }, []);
 
   useEffect(() => {
     params.then(p => {
@@ -34,6 +40,8 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
   }, [postId]);
 
   const getTweet = async (id: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
     const { error, data } = await supabase
       .from("posts")
       .select("id,content,image_url,image_path,created_at,user_id,is_pinned,profiles!posts_user_id_fkey(id,username,avatar_url,name,is_owner,role)")

@@ -1,15 +1,17 @@
 "use client";
 import Image from "next/image";
 import React from "react";
-import { BsThreeDots } from "react-icons/bs";
 import { useGetComments } from "../../custom-hooks/useComment";
 import { Comment } from "../../types/types";
 import moment from "moment";
 import CommentActions from "./CommentActions";
 import OwnerBadge from "./OwnerBadge";
+import PostOptionsMenu from "./PostOptionsMenu";
+import { useUserSession } from "../../custom-hooks/useUserSession";
 
 export default function Comments({ tweetId }: { tweetId: string }) {
   const { error, isError, isLoading, data: comments } = useGetComments(tweetId);
+  const { session } = useUserSession();
 
   if (isLoading) return <h1 className="text-white text-xl">Loading...</h1>;
   if (isError) return <h1 className="text-white text-2xl">{error.message}</h1>;
@@ -42,7 +44,13 @@ export default function Comments({ tweetId }: { tweetId: string }) {
                     {moment(comment.created_at).fromNow()}
                   </span>
                 </div>
-                <BsThreeDots className="text-secondary-text" />
+                <PostOptionsMenu
+                  tweetId={comment.id}
+                  creatorId={comment.profiles.id}
+                  currentUserId={session?.user.id}
+                  creatorUsername={comment.profiles.username}
+                  isComment={true}
+                />
               </div>
               <div className="text-white my-2 block">{comment.content}</div>
               <CommentActions

@@ -94,11 +94,14 @@ export default function Posts() {
                     {tweet.profiles.name}
                   </Link>
                   <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
-                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-secondary-text hover:underline">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-secondary-text hover:underline truncate max-w-[100px] md:max-w-none">
                     @{tweet.profiles.username}
                   </Link>
+                  <span className="text-secondary-text">·</span>
                   <span className="text-secondary-text">
-                    {moment(tweet.created_at).fromNow()}
+                    {moment(tweet.created_at).diff(moment(), 'hours') > -24 
+                      ? moment(tweet.created_at).fromNow(true).replace(' ago', '')
+                      : moment(tweet.created_at).format('MMM D')}
                   </span>
                 </div>
                 <PostOptionsMenu
