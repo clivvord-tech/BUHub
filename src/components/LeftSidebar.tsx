@@ -69,11 +69,10 @@ export default function LeftSidebar() {
               <span className='hidden lg:inline text-xs ml-auto bg-border px-2 py-1 rounded'>Soon</span>
             </div>
 
-            <div className='text-secondary-text flex items-center lg:gap-3 p-3 rounded-full opacity-50 cursor-not-allowed' title='Coming Soon'>
+            <Link href={`/home/profile/${profile?.username || ''}`} className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
               <FaRegUser size={26} />
               <span className='hidden lg:inline text-xl'>Profile</span>
-              <span className='hidden lg:inline text-xs ml-auto bg-border px-2 py-1 rounded'>Soon</span>
-            </div>
+            </Link>
 
             <div className='text-secondary-text flex items-center lg:gap-3 p-3 rounded-full opacity-50 cursor-not-allowed' title='Coming Soon'>
               <RiVerifiedBadgeFill size={26} />

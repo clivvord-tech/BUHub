@@ -108,6 +108,8 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
               currentUserId={tweet.user_id}
               imagePath={tweet.image_path}
               isTweetPostViewPage={true}
+              creatorUsername={tweet.profiles.username}
+              isPinned={tweet.is_pinned}
             />
           </div>
           {tweet.content && (

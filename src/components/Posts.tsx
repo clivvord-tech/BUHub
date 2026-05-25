@@ -75,7 +75,8 @@ export default function Posts() {
             </div>
           )}
           <div
-            className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
+            onClick={() => window.location.href = `/home/post/${tweet.id}`}
+            className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors cursor-pointer"
           >
             <Link href={`/home/profile/${tweet.profiles.username}`}>
               <Image
@@ -105,6 +106,8 @@ export default function Posts() {
                   creatorId={tweet.profiles.id}
                   currentUserId={session?.user.id}
                   imagePath={tweet.image_path}
+                  creatorUsername={tweet.profiles.username}
+                  isPinned={tweet.is_pinned}
                 />
               </div>
               {tweet.content && (

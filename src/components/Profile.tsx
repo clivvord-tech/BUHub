@@ -1,23 +1,41 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { useGetUser } from "../../custom-hooks/useGetUser";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "./OwnerBadge";
-import LogoutButton from "./LogoutButton";
 import { supabase } from "../../lib/SupabaseClient";
+import { useRouter } from "next/navigation";
 
 export default function Profile() {
   const { session, loading, profile, gettingSession } = useGetUser();
   const [stats, setStats] = useState({ posts: 0, followers: 0, following: 0 });
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (profile?.id) {
       loadStats();
     }
   }, [profile?.id]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    if (isMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   const loadStats = async () => {
     if (!profile?.id) return;
@@ -35,6 +53,11 @@ export default function Profile() {
     });
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.replace("/");
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center py-4">
@@ -49,9 +72,13 @@ export default function Profile() {
     );
   if (!session) return null;
   if (!profile) return null;
+  
   return (
-    <Link href={`/home/profile/${profile.username}`} className="mt-10 text-white rounded-lg transition-colors cursor-pointer">
-      <div className="flex justify-between items-center hover:bg-hover p-2 rounded-full">
+    <div className="mt-10 text-white relative" ref={menuRef}>
+      <div 
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="flex justify-between items-center hover:bg-hover p-2 rounded-full cursor-pointer"
+      >
         <div className="flex items-center gap-2">
           {profile?.avatar_url && (
             <Image
@@ -86,9 +113,29 @@ export default function Profile() {
           <span className="text-secondary-text ml-1">Followers</span>
         </div>
       </div>
-      <div className="mt-3">
-        <LogoutButton />
-      </div>
-    </Link>
+
+      {isMenuOpen && (
+        <div className="absolute bottom-full left-0 mb-2 w-64 bg-background border border-border rounded-lg shadow-lg">
+          <button
+            onClick={() => alert("Add existing account - Coming soon")}
+            className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors"
+          >
+            <span className="font-semibold">Add an existing account</span>
+          </button>
+          <button
+            onClick={() => alert("Manage accounts - Coming soon")}
+            className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors border-t border-border"
+          >
+            <span className="font-semibold">Manage accounts</span>
+          </button>
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors border-t border-border"
+          >
+            <span className="font-semibold">Log out @{profile?.username}</span>
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
