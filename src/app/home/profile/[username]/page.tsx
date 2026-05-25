@@ -158,7 +158,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-border grid grid-cols-4 text-center">
+      <div className={`border-b border-border grid text-center ${profile.is_owner ? 'grid-cols-4' : 'grid-cols-3'}`}>
         <button className="py-4 text-white font-semibold border-b-2 border-primary hover:bg-hover transition-colors">
           Posts
         </button>
