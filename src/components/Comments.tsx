@@ -32,16 +32,19 @@ export default function Comments({ tweetId }: { tweetId: string }) {
             />
             <div className="w-full">
               <div className="flex justify-between">
-                <div className="flex gap-1 items-center text-sm">
-                  <span className="text-white font-bold">
+                <div className="flex gap-1 items-center text-sm flex-wrap">
+                  <span className="text-white font-bold truncate max-w-[80px] md:max-w-none">
                     {comment.profiles.name}
                   </span>
                   <OwnerBadge isOwner={comment.profiles.is_owner} size="sm" />
-                  <span className="text-secondary-text">
+                  <span className="text-secondary-text truncate max-w-[80px] md:max-w-none">
                     @{comment.profiles.username}
                   </span>
-                  <span className="text-secondary-text">
-                    {moment(comment.created_at).fromNow()}
+                  <span className="text-secondary-text">·</span>
+                  <span className="text-secondary-text whitespace-nowrap">
+                    {moment(comment.created_at).diff(moment(), 'hours') > -24 
+                      ? moment(comment.created_at).fromNow(true).replace(' ago', '')
+                      : moment(comment.created_at).format('MMM D')}
                   </span>
                 </div>
                 <PostOptionsMenu

@@ -211,11 +211,16 @@ export default function ProfilePage() {
               />
               <div className="w-full">
                 <div className="flex justify-between">
-                  <div className="flex gap-1 items-center text-sm">
-                    <span className="text-white font-bold">{tweet.profiles.name}</span>
+                  <div className="flex gap-1 items-center text-sm flex-wrap">
+                    <span className="text-white font-bold truncate max-w-[80px] md:max-w-none">{tweet.profiles.name}</span>
                     <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
-                    <span className="text-secondary-text">@{tweet.profiles.username}</span>
-                    <span className="text-secondary-text">{moment(tweet.created_at).fromNow()}</span>
+                    <span className="text-secondary-text truncate max-w-[80px] md:max-w-none">@{tweet.profiles.username}</span>
+                    <span className="text-secondary-text">·</span>
+                    <span className="text-secondary-text whitespace-nowrap">
+                      {moment(tweet.created_at).diff(moment(), 'hours') > -24 
+                        ? moment(tweet.created_at).fromNow(true).replace(' ago', '')
+                        : moment(tweet.created_at).format('MMM D')}
+                    </span>
                   </div>
                   {isOwnProfile && (
                     <div className="flex items-center gap-2">

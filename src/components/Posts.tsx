@@ -89,16 +89,16 @@ export default function Posts() {
             </Link>
             <div className="w-full">
               <div className="flex justify-between">
-                <div className="flex gap-1 items-center text-sm">
-                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-white font-bold hover:underline">
+                <div className="flex gap-1 items-center text-sm flex-wrap">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-white font-bold hover:underline truncate max-w-[80px] md:max-w-none">
                     {tweet.profiles.name}
                   </Link>
                   <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
-                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-secondary-text hover:underline truncate max-w-[100px] md:max-w-none">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-secondary-text hover:underline truncate max-w-[80px] md:max-w-none">
                     @{tweet.profiles.username}
                   </Link>
                   <span className="text-secondary-text">·</span>
-                  <span className="text-secondary-text">
+                  <span className="text-secondary-text whitespace-nowrap">
                     {moment(tweet.created_at).diff(moment(), 'hours') > -24 
                       ? moment(tweet.created_at).fromNow(true).replace(' ago', '')
                       : moment(tweet.created_at).format('MMM D')}
