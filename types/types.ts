@@ -44,3 +44,45 @@ export type Comment = {
     role: UserRole;
   };
 }
+
+export type Follow = {
+  id: string;
+  follower_id: string;
+  following_id: string;
+  created_at: string;
+};
+
+export type Notification = {
+  id: string;
+  user_id: string;
+  actor_id: string;
+  type: 'like' | 'comment' | 'follow';
+  post_id?: string;
+  comment_id?: string;
+  is_read: boolean;
+  created_at: string;
+  actor: {
+    id: string;
+    name: string;
+    username: string;
+    avatar_url: string;
+    is_owner: boolean;
+  };
+  post?: {
+    id: string;
+    content: string;
+  };
+};
+
+export type ProfileStats = {
+  id: string;
+  username: string;
+  name: string;
+  avatar_url: string;
+  bio?: string;
+  is_owner: boolean;
+  role: UserRole;
+  followers_count: number;
+  following_count: number;
+  posts_count: number;
+};

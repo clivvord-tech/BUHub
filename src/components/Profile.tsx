@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { useGetUser } from "../../custom-hooks/useGetUser";
@@ -24,7 +25,7 @@ export default function Profile() {
   if (!session) return null;
   if (!profile) return null;
   return (
-    <div className="mt-10 text-white flex justify-between items-center">
+    <Link href={`/home/profile/${profile.username}`} className="mt-10 text-white flex justify-between items-center hover:bg-hover p-2 rounded-full transition-colors cursor-pointer">
       <div className="flex items-center gap-2">
         {profile?.avatar_url && (
           <Image
@@ -44,6 +45,6 @@ export default function Profile() {
         </div>
       </div>
       <HiDotsHorizontal className="hidden lg:block" />
-    </div>
+    </Link>
   );
 }
