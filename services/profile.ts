@@ -48,7 +48,8 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
       image_path,
       created_at,
       user_id,
-      profiles(
+      is_pinned,
+      profiles!inner(
         id,
         username,
         name,
@@ -58,6 +59,7 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
       )
     `)
     .eq("user_id", userId)
+    .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .range(from, to);
 

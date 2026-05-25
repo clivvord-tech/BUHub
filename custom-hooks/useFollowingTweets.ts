@@ -23,8 +23,8 @@ const getFollowingTweets = async (pageParam: number) => {
   const { data, error } = await supabase
     .from("posts")
     .select(`
-      *,
-      profiles(id, username, avatar_url, name, is_owner, role)
+      id,content,image_url,image_path,created_at,user_id,is_pinned,
+      profiles!inner(id, username, avatar_url, name, is_owner, role)
     `)
     .in("user_id", followingIds)
     .order("created_at", { ascending: false })
