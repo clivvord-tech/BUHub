@@ -48,7 +48,7 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
       image_path,
       created_at,
       user_id,
-      profiles!posts_user_id_fkey(
+      profiles(
         id,
         username,
         name,
