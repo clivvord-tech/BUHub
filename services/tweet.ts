@@ -66,10 +66,9 @@ export const getTweets = async (page: number = 0, pageSize: number = 10) => {
   const { error, data, count } = await supabase
     .from("posts")
     .select(
-      `*,profiles(id,username,name,avatar_url,is_owner,role)`,
+      `id,content,image_url,image_path,created_at,user_id,is_pinned,profiles(id,username,name,avatar_url,is_owner,role)`,
       { count: "exact" }
     )
-    .order("is_pinned", { ascending: false })
     .order("created_at", { ascending: false })
     .range(start, end);
 
