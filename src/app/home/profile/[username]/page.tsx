@@ -43,7 +43,7 @@ export default function ProfilePage() {
 
     const postsResult = await getUserPosts(profileResult.data.id);
     if (postsResult.data) {
-      setPosts(postsResult.data as Tweet[]);
+      setPosts(postsResult.data as any);
     }
 
     if (currentUser?.id && currentUser.id !== profileResult.data.id) {
