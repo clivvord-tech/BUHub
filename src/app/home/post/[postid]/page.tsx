@@ -1,35 +1,74 @@
+"use client";
 import Comments from "@/components/Comments";
 import GoBackButton from "@/components/GoBackButton";
 import ReplyPost from "@/components/ReplyPost";
 import OwnerBadge from "@/components/OwnerBadge";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 import { supabase } from "../../../../../lib/SupabaseClient";
 import { Tweet } from "../../../../../types/types";
 import moment from "moment";
 import TweetActions from "@/components/TweetActions";
+import { trackPostView } from "../../../../../services/views";
+import { SpinnerCircularFixed } from "spinners-react";
 
+export default function Page({ params }: { params: Promise<{ postid: string }> }) {
+  const [tweet, setTweet] = useState<Tweet | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [postId, setPostId] = useState<string>("");
 
+  useEffect(() => {
+    params.then(p => {
+      setPostId(p.postid);
+      getTweet(p.postid);
+    });
+  }, [params]);
 
-const getTweet = async (id: string) => {
-  const { error, data } = await supabase
-    .from("posts")
-    .select("*,profiles(id,username,avatar_url,name,is_owner,role)")
-    .eq("id", id)
-    .single();
+  useEffect(() => {
+    if (postId) {
+      trackPostView(postId);
+    }
+  }, [postId]);
 
-  if (error) {
-    console.log(error.message);
+  const getTweet = async (id: string) => {
+    const { error, data } = await supabase
+      .from("posts")
+      .select("id,content,image_url,image_path,created_at,user_id,is_pinned,profiles!posts_user_id_fkey(id,username,avatar_url,name,is_owner,role)")
+      .eq("id", id)
+      .single();
+
+    if (error) {
+      console.log(error.message);
+      setLoading(false);
+      return;
+    }
+
+    const transformedData = {
+      ...data,
+      profiles: Array.isArray(data.profiles) ? data.profiles[0] : data.profiles
+    };
+
+    setTweet(transformedData as Tweet);
+    setLoading(false);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-30">
+        <SpinnerCircularFixed size={25} color="#1DA1F2" />
+      </div>
+    );
   }
 
-  return data;
-};
-
-export default async function Page({ params }: { params: Promise<{ postid: string }> }) {
-  const postId = (await params).postid
-  const tweet: Tweet = await getTweet(postId);
+  if (!tweet) {
+    return (
+      <div className="px-4 py-8 text-center">
+        <p className="text-red-500 font-semibold">Post not found</p>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex justify-between items-center mb-3 px-4 py-2">
@@ -65,7 +104,14 @@ export default async function Page({ params }: { params: Promise<{ postid: strin
                 {moment(tweet.created_at).fromNow()}
               </span>
             </div>
-            <BsThreeDots className="text-secondary-text" />
+            <TweetActions
+              creatorId={tweet.profiles.id}
+              tweetId={tweet.id}
+              imagePath={tweet.image_path}
+              isTweetPostViewPage={true}
+              isPinned={tweet.is_pinned}
+              showOnlyPinDelete={true}
+            />
           </div>
           {tweet.content && (
             <div className="text-white my-2 block">{tweet.content}</div>
@@ -86,6 +132,7 @@ export default async function Page({ params }: { params: Promise<{ postid: strin
             tweetId={tweet.id}
             imagePath={tweet.image_path}
             isTweetPostViewPage={true}
+            isPinned={tweet.is_pinned}
           />
         </div>
       </div>

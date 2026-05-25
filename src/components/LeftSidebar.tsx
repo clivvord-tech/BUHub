@@ -8,6 +8,7 @@ import { GoHomeFill } from 'react-icons/go'
 import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi'
 import { IoSearchOutline } from 'react-icons/io5'
 import { RiVerifiedBadgeFill } from 'react-icons/ri'
+import { IoMdSettings } from 'react-icons/io'
 import Profile from './Profile'
 import LogoutButton from './LogoutButton'
 import { getUnreadNotificationCount } from '../../services/notification'
@@ -81,6 +82,11 @@ export default function LeftSidebar() {
             <Link href="/home/bookmarks" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
               <HiOutlineDotsCircleHorizontal size={30} />
               <span className='hidden lg:inline text-xl'>Bookmarks</span>
+            </Link>
+
+            <Link href="/home/settings" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
+              <IoMdSettings size={30} />
+              <span className='hidden lg:inline text-xl'>Settings</span>
             </Link>
         </div>
        <div className='absolute bottom-0 left-0 w-full p-4'>

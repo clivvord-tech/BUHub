@@ -16,6 +16,7 @@ import { useCommentsCount } from "../../custom-hooks/useComment";
 import LikeButton from "./LikeButton";
 import { addBookmark, removeBookmark, checkIfBookmarked } from "../../services/bookmark";
 import { addRepost, removeRepost, checkIfReposted, getRepostCount, pinPost, unpinPost } from "../../services/repost";
+import { getPostViewCount } from "../../services/views";
 
 type TweetActionsProp = {
   creatorId: string;
@@ -23,6 +24,7 @@ type TweetActionsProp = {
   imagePath: string;
   isTweetPostViewPage: boolean;
   isPinned?: boolean;
+  showOnlyPinDelete?: boolean;
 };
 
 export default function TweetActions({
@@ -31,6 +33,7 @@ export default function TweetActions({
   imagePath,
   isTweetPostViewPage,
   isPinned = false,
+  showOnlyPinDelete = false,
 }: TweetActionsProp) {
   const { mutate } = useDeleteTweet();
   const { session } = useUserSession();
@@ -41,12 +44,14 @@ export default function TweetActions({
   const [isReposted, setIsReposted] = useState(false);
   const [repostCount, setRepostCount] = useState(0);
   const [pinned, setPinned] = useState(isPinned);
+  const [viewCount, setViewCount] = useState(0);
 
   useEffect(() => {
     if (userId) {
       checkIfBookmarked(tweetId).then(setIsBookmarked);
       checkIfReposted(tweetId).then(setIsReposted);
       getRepostCount(tweetId).then(setRepostCount);
+      getPostViewCount(tweetId).then(setViewCount);
     }
   }, [tweetId, userId]);
 
@@ -99,8 +104,32 @@ export default function TweetActions({
     } else {
       await pinPost(tweetId);
       setPinned(true);
+      window.location.reload();
     }
   };
+
+  if (showOnlyPinDelete && creatorId === userId) {
+    return (
+      <div className="flex items-center gap-2">
+        <button
+          onClick={handlePin}
+          className={`flex items-center gap-1 cursor-pointer transition-colors ${
+            pinned ? 'text-primary' : 'text-secondary-text hover:text-primary'
+          }`}
+          title={pinned ? "Unpin from profile" : "Pin to profile"}
+        >
+          {pinned ? <BsPinFill size={16} /> : <BsPin size={16} />}
+        </button>
+        <button
+          onClick={handleDeleteTweet}
+          className="text-red-700 flex items-center gap-1 cursor-pointer hover:text-red-500"
+          title="Delete post"
+        >
+          <FaTrash size={14} />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex justify-between my-4">
@@ -138,8 +167,9 @@ export default function TweetActions({
         </button>
       )}
       <LikeButton tweetId={tweetId} userId={userId} session={session}/>
-      <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer opacity-50">
+      <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
         <IoIosStats />
+        {viewCount > 0 && <span className="text-sm">{viewCount}</span>}
       </div>
       <button
         onClick={handleBookmark}
