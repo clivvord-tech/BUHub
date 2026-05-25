@@ -154,23 +154,13 @@ export default function TweetActions({
         <span className="text-sm">{commentsCount || 0}</span>
       </div>
       {creatorId === userId ? (
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handlePin}
-            className={`flex items-center gap-1 cursor-pointer transition-colors ${
-              pinned ? 'text-primary' : 'text-secondary-text hover:text-primary'
-            }`}
-            title={pinned ? "Unpin from profile" : "Pin to profile"}
-          >
-            {pinned ? <BsPinFill /> : <BsPin />}
-          </button>
-          <button
-            onClick={handleDeleteTweet}
-            className="text-red-700 flex items-center gap-1 cursor-pointer"
-          >
-            <FaTrash />
-          </button>
-        </div>
+        <button
+          onClick={handleDeleteTweet}
+          className="text-red-700 flex items-center gap-1 cursor-pointer hover:text-red-500"
+          title="Delete post"
+        >
+          <FaTrash />
+        </button>
       ) : (
         <button
           onClick={handleRepost}
