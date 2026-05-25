@@ -115,7 +115,7 @@ export default function ProfilePage() {
               height={130}
               className="w-32 h-32 rounded-full border-4 border-background object-cover"
             />
-            {!isOwnProfile && (
+            {!isOwnProfile ? (
               <button
                 onClick={handleFollow}
                 disabled={isFollowLoading}
@@ -126,6 +126,10 @@ export default function ProfilePage() {
                 }`}
               >
                 {isFollowLoading ? "..." : isFollowing ? "Following" : "Follow"}
+              </button>
+            ) : (
+              <button className="mt-16 px-6 py-2 rounded-full font-bold bg-transparent border border-border text-white hover:bg-hover transition-all opacity-50 cursor-not-allowed" disabled title="Coming Soon">
+                Edit profile
               </button>
             )}
           </div>
@@ -151,6 +155,21 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="border-b border-border grid grid-cols-3 text-center">
+        <button className="py-4 text-white font-semibold border-b-2 border-primary hover:bg-hover transition-colors">
+          Posts
+        </button>
+        {profile.is_owner && (
+          <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title="Coming Soon">
+            Articles
+          </button>
+        )}
+        <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title="Coming Soon">
+          Media
+        </button>
       </div>
 
       {/* Posts */}
