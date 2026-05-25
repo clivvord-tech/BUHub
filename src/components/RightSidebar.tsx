@@ -1,5 +1,7 @@
 import React from 'react'
 import { IoSearchOutline } from 'react-icons/io5'
+import TrendingHashtags from './TrendingHashtags'
+import WhoToFollow from './WhoToFollow'
 
 export default function RightSidebar() {
   return (
@@ -14,6 +16,14 @@ export default function RightSidebar() {
             />
         </div>
         
+        <div className='mt-5'>
+          <TrendingHashtags />
+        </div>
+
+        <div className='mt-5'>
+          <WhoToFollow />
+        </div>
+
         <div className='border border-border p-4 text-white mt-5 rounded-lg opacity-60'>
             <div className='flex justify-between items-center mb-2'>
               <h3 className='font-bold text-xl'>Premium</h3>

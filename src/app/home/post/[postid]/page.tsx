@@ -77,9 +77,6 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
           <GoBackButton />
           <span className="font-bold text-xl">Post</span>
         </div>
-        <button className="border border-border rounded-full px-4 py-1 cursor-pointer text-white">
-          Reply
-        </button>
       </div>
       <div className="px-4 py-2 flex gap-3 border-b border-border">
         <Link href={`/home/profile/${tweet.profiles.username}`}>
@@ -127,6 +124,13 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
               />
             </div>
           )}
+          <TweetActions
+            creatorId={tweet.profiles.id}
+            tweetId={tweet.id}
+            imagePath={tweet.image_path}
+            isTweetPostViewPage={true}
+            isPinned={tweet.is_pinned}
+          />
         </div>
       </div>
       <ReplyPost tweetId={tweet.id}/>
