@@ -158,7 +158,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-border grid grid-cols-3 text-center">
+      <div className="border-b border-border grid grid-cols-4 text-center">
         <button className="py-4 text-white font-semibold border-b-2 border-primary hover:bg-hover transition-colors">
           Posts
         </button>
@@ -170,6 +170,11 @@ export default function ProfilePage() {
         <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title="Coming Soon">
           Media
         </button>
+        {isOwnProfile && (
+          <button className="py-4 text-secondary-text font-semibold hover:bg-hover transition-colors opacity-50 cursor-not-allowed" disabled title="Coming Soon">
+            Likes
+          </button>
+        )}
       </div>
 
       {/* Posts */}
