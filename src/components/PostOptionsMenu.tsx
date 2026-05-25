@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { FaTrash, FaUserPlus, FaVolumeMute, FaBan, FaChartBar, FaCode, FaFlag } from "react-icons/fa6";
+import { FaTrash, FaUserPlus, FaVolumeXmark, FaBan, FaChartBar, FaCode, FaFlag } from "react-icons/fa6";
 import { BsPinAngle } from "react-icons/bs";
 import { useDeleteTweet } from "../../custom-hooks/useTweet";
 import { useRouter } from "next/navigation";
@@ -140,14 +140,14 @@ export default function PostOptionsMenu({
                 onClick={() => alert(`Mute @${creatorUsername} - Coming soon`)}
                 className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
               >
-                <FaVolumeMute size={16} />
+                <FaVolumeXmark size={16} />
                 <span className="font-semibold">Mute</span>
               </button>
               <button
                 onClick={() => alert("Mute this conversation - Coming soon")}
                 className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
               >
-                <FaVolumeMute size={16} />
+                <FaVolumeXmark size={16} />
                 <span className="font-semibold">Mute this conversation</span>
               </button>
               <button
@@ -199,7 +199,7 @@ export default function PostOptionsMenu({
                 onClick={() => alert(`Mute @${creatorUsername} - Coming soon`)}
                 className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
               >
-                <FaVolumeMute size={16} />
+                <FaVolumeXmark size={16} />
                 <span className="font-semibold">Mute</span>
               </button>
               <button
