@@ -91,13 +91,6 @@ export default function LeftSidebar() {
               <IoMdSettings size={30} />
               <span className='hidden lg:inline text-xl'>Settings</span>
             </Link>
-
-            {profile?.is_owner && (
-              <Link href="/home/analytics" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
-                <IoStatsChart size={30} />
-                <span className='hidden lg:inline text-xl'>Analytics</span>
-              </Link>
-            )}
         </div>
        <div className='absolute bottom-0 left-0 w-full p-4'>
          <LogoutButton/>

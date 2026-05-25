@@ -105,14 +105,6 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
                 {moment(tweet.created_at).fromNow()}
               </span>
             </div>
-            <TweetActions
-              creatorId={tweet.profiles.id}
-              tweetId={tweet.id}
-              imagePath={tweet.image_path}
-              isTweetPostViewPage={true}
-              isPinned={tweet.is_pinned}
-              showOnlyPinDelete={true}
-            />
             <PostOptionsMenu
               tweetId={tweet.id}
               creatorId={tweet.profiles.id}
@@ -135,13 +127,6 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
               />
             </div>
           )}
-          <TweetActions
-            creatorId={tweet.profiles.id}
-            tweetId={tweet.id}
-            imagePath={tweet.image_path}
-            isTweetPostViewPage={true}
-            isPinned={tweet.is_pinned}
-          />
         </div>
       </div>
       <ReplyPost tweetId={tweet.id}/>
