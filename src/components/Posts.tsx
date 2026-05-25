@@ -68,23 +68,25 @@ export default function Posts() {
             key={tweet.id}
             className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors"
           >
-            <Image
-              src={tweet.profiles.avatar_url}
-              alt="profile-pic"
-              width={100}
-              height={100}
-              className="w-10 h-10 object-cover rounded-full shrink-0"
-            />
+            <Link href={`/home/profile/${tweet.profiles.username}`}>
+              <Image
+                src={tweet.profiles.avatar_url}
+                alt="profile-pic"
+                width={100}
+                height={100}
+                className="w-10 h-10 object-cover rounded-full shrink-0 hover:brightness-90 transition-all"
+              />
+            </Link>
             <div className="w-full">
               <div className="flex justify-between">
                 <div className="flex gap-1 items-center text-sm">
-                  <span className="text-white font-bold">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-white font-bold hover:underline">
                     {tweet.profiles.name}
-                  </span>
+                  </Link>
                   <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
-                  <span className="text-secondary-text">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-secondary-text hover:underline">
                     @{tweet.profiles.username}
-                  </span>
+                  </Link>
                   <span className="text-secondary-text">
                     {moment(tweet.created_at).fromNow()}
                   </span>
