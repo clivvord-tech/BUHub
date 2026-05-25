@@ -10,6 +10,7 @@ import { BsPinFill } from "react-icons/bs";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "@/components/OwnerBadge";
 import TweetActions from "@/components/TweetActions";
+import PostOptionsMenu from "@/components/PostOptionsMenu";
 import EditProfileModal from "@/components/EditProfileModal";
 import Link from "next/link";
 import moment from "moment";
@@ -213,13 +214,29 @@ export default function ProfilePage() {
                     <span className="text-secondary-text">{moment(tweet.created_at).fromNow()}</span>
                   </div>
                   {isOwnProfile && (
-                    <TweetActions
-                      creatorId={tweet.profiles.id}
+                    <div className="flex items-center gap-2">
+                      <TweetActions
+                        creatorId={tweet.profiles.id}
+                        tweetId={tweet.id}
+                        imagePath={tweet.image_path}
+                        isTweetPostViewPage={false}
+                        isPinned={tweet.is_pinned}
+                        showOnlyPin={true}
+                      />
+                      <PostOptionsMenu
+                        tweetId={tweet.id}
+                        creatorId={tweet.profiles.id}
+                        currentUserId={currentUser?.id}
+                        imagePath={tweet.image_path}
+                      />
+                    </div>
+                  )}
+                  {!isOwnProfile && (
+                    <PostOptionsMenu
                       tweetId={tweet.id}
+                      creatorId={tweet.profiles.id}
+                      currentUserId={currentUser?.id}
                       imagePath={tweet.image_path}
-                      isTweetPostViewPage={false}
-                      isPinned={tweet.is_pinned}
-                      showOnlyPin={true}
                     />
                   )}
                 </div>

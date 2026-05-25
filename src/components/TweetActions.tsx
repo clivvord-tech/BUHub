@@ -153,25 +153,15 @@ export default function TweetActions({
         <FaRegComment />
         <span className="text-sm">{commentsCount || 0}</span>
       </div>
-      {creatorId === userId ? (
-        <button
-          onClick={handleDeleteTweet}
-          className="text-red-700 flex items-center gap-1 cursor-pointer hover:text-red-500"
-          title="Delete post"
-        >
-          <FaTrash />
-        </button>
-      ) : (
-        <button
-          onClick={handleRepost}
-          className={`flex items-center gap-1 cursor-pointer transition-colors ${
-            isReposted ? 'text-green-500' : 'text-secondary-text hover:text-green-500'
-          }`}
-        >
-          <FiRepeat />
-          {repostCount > 0 && <span className="text-sm">{repostCount}</span>}
-        </button>
-      )}
+      <button
+        onClick={creatorId === userId ? handleRepost : handleRepost}
+        className={`flex items-center gap-1 cursor-pointer transition-colors ${
+          isReposted ? 'text-green-500' : 'text-secondary-text hover:text-green-500'
+        }`}
+      >
+        <FiRepeat />
+        {repostCount > 0 && <span className="text-sm">{repostCount}</span>}
+      </button>
       <LikeButton tweetId={tweetId} userId={userId} session={session}/>
       <div className="text-secondary-text flex items-center gap-1 hover:text-blue-400 cursor-pointer">
         <IoIosStats />

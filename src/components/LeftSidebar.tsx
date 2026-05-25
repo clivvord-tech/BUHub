@@ -9,12 +9,15 @@ import { HiOutlineDotsCircleHorizontal } from 'react-icons/hi'
 import { IoSearchOutline } from 'react-icons/io5'
 import { RiVerifiedBadgeFill } from 'react-icons/ri'
 import { IoMdSettings } from 'react-icons/io'
+import { IoStatsChart } from 'react-icons/io5'
 import Profile from './Profile'
 import LogoutButton from './LogoutButton'
 import { getUnreadNotificationCount } from '../../services/notification'
+import { useGetUser } from '../../custom-hooks/useGetUser'
 
 export default function LeftSidebar() {
   const [unreadCount, setUnreadCount] = useState(0);
+  const { profile } = useGetUser();
 
   useEffect(() => {
     loadUnreadCount();
@@ -88,6 +91,13 @@ export default function LeftSidebar() {
               <IoMdSettings size={30} />
               <span className='hidden lg:inline text-xl'>Settings</span>
             </Link>
+
+            {profile?.is_owner && (
+              <Link href="/home/analytics" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
+                <IoStatsChart size={30} />
+                <span className='hidden lg:inline text-xl'>Analytics</span>
+              </Link>
+            )}
         </div>
        <div className='absolute bottom-0 left-0 w-full p-4'>
          <LogoutButton/>

@@ -11,6 +11,7 @@ import { supabase } from "../../../../../lib/SupabaseClient";
 import { Tweet } from "../../../../../types/types";
 import moment from "moment";
 import TweetActions from "@/components/TweetActions";
+import PostOptionsMenu from "@/components/PostOptionsMenu";
 import { trackPostView } from "../../../../../services/views";
 import { SpinnerCircularFixed } from "spinners-react";
 
@@ -111,6 +112,13 @@ export default function Page({ params }: { params: Promise<{ postid: string }> }
               isTweetPostViewPage={true}
               isPinned={tweet.is_pinned}
               showOnlyPinDelete={true}
+            />
+            <PostOptionsMenu
+              tweetId={tweet.id}
+              creatorId={tweet.profiles.id}
+              currentUserId={tweet.user_id}
+              imagePath={tweet.image_path}
+              isTweetPostViewPage={true}
             />
           </div>
           {tweet.content && (

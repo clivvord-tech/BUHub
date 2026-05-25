@@ -7,10 +7,14 @@ import { useGetTweets } from "../../custom-hooks/useTweet";
 import { Tweet } from "../../types/types";
 import moment from "moment";
 import TweetActions from "./TweetActions";
+import PostOptionsMenu from "./PostOptionsMenu";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "./OwnerBadge";
+import { useUserSession } from "../../custom-hooks/useUserSession";
+import { linkifyContent } from "../../lib/textUtils";
 
 export default function Posts() {
+  const { session } = useUserSession();
   const { isLoading, isError, error, data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useGetTweets();
   const observerTarget = useRef<HTMLDivElement>(null);
@@ -96,15 +100,19 @@ export default function Posts() {
                     {moment(tweet.created_at).fromNow()}
                   </span>
                 </div>
-                <BsThreeDots className="text-secondary-text" />
+                <PostOptionsMenu
+                  tweetId={tweet.id}
+                  creatorId={tweet.profiles.id}
+                  currentUserId={session?.user.id}
+                  imagePath={tweet.image_path}
+                />
               </div>
               {tweet.content && (
                 <Link
                   href={`/home/post/${tweet.id}`}
                   className="text-white my-2 block hover:brightness-110"
-                >
-                  {tweet.content}
-                </Link>
+                  dangerouslySetInnerHTML={{ __html: linkifyContent(tweet.content) }}
+                />
               )}
               {tweet.image_url && (
                 <Link href={`/home/post/${tweet.id}`}>
