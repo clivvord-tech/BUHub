@@ -11,6 +11,7 @@ import { RiVerifiedBadgeFill } from 'react-icons/ri'
 import { IoMdSettings } from 'react-icons/io'
 import { IoStatsChart } from 'react-icons/io5'
 import Profile from './Profile'
+import BHLogo from './BHLogo'
 import { useGetUser } from '../../custom-hooks/useGetUser'
 import { getUnreadNotificationCount } from '../../services/notification'
 
@@ -31,9 +32,9 @@ export default function LeftSidebar() {
 
   return (
     <aside className='hidden lg:flex lg:flex-col absolute left-0 top-0 w-[275px] h-screen border-r border-border p-4'>
-        <div className='mb-6 text-primary flex items-center justify-center lg:justify-start'>
-            <div className='font-bold text-2xl'>BH</div>
-        </div>
+        <Link href="/home" className='mb-6 flex items-center justify-center lg:justify-start'>
+            <BHLogo size={36} showText={false} />
+        </Link>
         <div className='space-y-2'>
             <Link href="/home" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
               <GoHomeFill size={26}/>

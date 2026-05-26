@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import BHLogo from "./BHLogo";
 import { useGetUser } from "../../custom-hooks/useGetUser";
 import { SpinnerCircularFixed } from "spinners-react";
 
@@ -29,7 +30,9 @@ export default function MobileTopHeader({ onProfileClick }: MobileTopHeaderProps
           ) : null}
         </button>
         
-        <div className="text-primary font-bold text-xl">BH</div>
+        <div className="flex items-center justify-center">
+          <BHLogo size={32} showText={false} />
+        </div>
         
         <div className="w-8"></div>
       </div>
