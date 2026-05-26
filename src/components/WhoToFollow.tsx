@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/SupabaseClient";
 import Link from "next/link";
 import Image from "next/image";
-import { followUser, checkIfFollowing } from "../../services/follow";
+import { followUser, getFollowStatus } from "../../services/follow";
 import OwnerBadge from "./OwnerBadge";
 
 type User = {
@@ -14,9 +14,14 @@ type User = {
   is_owner: boolean;
 };
 
+type FollowStatus = {
+  isFollowing: boolean;
+  isFollowedBy: boolean;
+};
+
 export default function WhoToFollow() {
   const [users, setUsers] = useState<User[]>([]);
-  const [followingStatus, setFollowingStatus] = useState<Record<string, boolean>>({});
+  const [followStatus, setFollowStatus] = useState<Record<string, FollowStatus>>({});
   const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -47,12 +52,12 @@ export default function WhoToFollow() {
       const suggestions = data.filter(u => !followingIds.includes(u.id)).slice(0, 3);
       setUsers(suggestions);
       
-      // Initialize following status for each user
-      const status: Record<string, boolean> = {};
+      // Get follow status for each user
+      const status: Record<string, FollowStatus> = {};
       for (const suggestedUser of suggestions) {
-        status[suggestedUser.id] = await checkIfFollowing(suggestedUser.id);
+        status[suggestedUser.id] = await getFollowStatus(suggestedUser.id);
       }
-      setFollowingStatus(status);
+      setFollowStatus(status);
     }
   };
 
@@ -63,7 +68,10 @@ export default function WhoToFollow() {
     
     if (result.success) {
       // Update local state
-      setFollowingStatus(prev => ({ ...prev, [userId]: true }));
+      setFollowStatus(prev => ({ 
+        ...prev, 
+        [userId]: { ...prev[userId], isFollowing: true } 
+      }));
       
       // Reload suggestions after a short delay
       setTimeout(() => {
@@ -75,6 +83,12 @@ export default function WhoToFollow() {
     }
     
     setLoadingStates(prev => ({ ...prev, [userId]: false }));
+  };
+
+  const getButtonText = (status: FollowStatus) => {
+    if (status.isFollowing) return "Following";
+    if (status.isFollowedBy) return "Follow Back";
+    return "Follow";
   };
 
   if (users.length === 0) return null;
@@ -101,16 +115,16 @@ export default function WhoToFollow() {
                 <p className="text-secondary-text text-sm truncate">@{user.username}</p>
               </div>
             </Link>
-            {!followingStatus[user.id] && (
+            {!followStatus[user.id]?.isFollowing && (
               <button
                 onClick={() => handleFollow(user.id)}
                 disabled={loadingStates[user.id]}
                 className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loadingStates[user.id] ? "..." : "Follow"}
+                {loadingStates[user.id] ? "..." : getButtonText(followStatus[user.id] || { isFollowing: false, isFollowedBy: false })}
               </button>
             )}
-            {followingStatus[user.id] && (
+            {followStatus[user.id]?.isFollowing && (
               <span className="text-secondary-text text-sm">Following</span>
             )}
           </div>

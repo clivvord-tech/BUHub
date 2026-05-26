@@ -33,6 +33,14 @@ It takes only **6 minutes** to get BinghamHub running!
 - **Delete:** Remove your own posts
 - **Image Upload:** Supabase Storage integration
 
+### 💬 Messaging Features
+- **Direct Messages:** Real-time 1-on-1 messaging
+- **Typing Indicators:** See when someone is typing
+- **Read Receipts:** Track message read status
+- **Image Sharing:** Send images in messages
+- **User Search:** Find and message any user
+- **Unread Counts:** Badge showing unread messages
+
 ### 🎨 Design
 - **X/Twitter-like UI:** Familiar, clean interface
 - **Dark Mode:** Easy on the eyes
@@ -52,6 +60,8 @@ It takes only **6 minutes** to get BinghamHub running!
 
 - **[QUICK-START.md](./QUICK-START.md)** - Get running in 6 minutes ⚡
 - **[SETUP-GUIDE.md](./SETUP-GUIDE.md)** - Detailed setup and troubleshooting 📖
+- **[MESSAGES-QUICKSTART.md](./MESSAGES-QUICKSTART.md)** - Direct Messages setup (5 min) 💬
+- **[MESSAGES-SETUP.md](./MESSAGES-SETUP.md)** - Complete Messages guide 📱
 - **[FIXES-SUMMARY.md](./FIXES-SUMMARY.md)** - What was fixed and why 🔧
 - **[OWNER-ACCOUNT.md](./OWNER-ACCOUNT.md)** - Owner account setup 👑
 - **[supabase-schema.sql](./supabase-schema.sql)** - Database schema 🗄️
@@ -73,11 +83,15 @@ It takes only **6 minutes** to get BinghamHub running!
 - RLS security policies
 - Responsive design
 - Dark mode UI
+- **Direct Messages (DMs)** ✨ NEW!
+- Real-time messaging
+- Typing indicators
+- Read receipts
+- Image sharing in messages
 
 ### 🔜 Future Features
 - Explore page
 - Notifications system
-- Direct messages (DMs)
 - User profile pages
 - Search functionality
 - Hashtags
@@ -94,6 +108,9 @@ It takes only **6 minutes** to get BinghamHub running!
 - Report system
 - Block/Mute users
 - Premium features
+- Group chats (3+ people)
+- Message reactions
+- Voice/Video messages
 
 ## 🔒 Security Features
 
@@ -215,6 +232,19 @@ comments
 ├── user_id (UUID, FK)
 ├── tweet_id (UUID, FK)
 └── content (TEXT)
+
+conversations (messages)
+├── id (UUID, PK)
+├── created_at (TIMESTAMPTZ)
+└── updated_at (TIMESTAMPTZ)
+
+messages
+├── id (UUID, PK)
+├── conversation_id (UUID, FK)
+├── sender_id (UUID, FK)
+├── content (TEXT)
+├── image_url (TEXT)
+└── created_at (TIMESTAMPTZ)
 ```
 
 ## 🤝 Contributing

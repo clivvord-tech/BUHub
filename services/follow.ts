@@ -88,6 +88,31 @@ export const checkIfFollowing = async (followingId: string) => {
   }
 };
 
+export const getFollowStatus = async (targetUserId: string) => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { isFollowing: false, isFollowedBy: false };
+
+    const { data, error } = await supabase
+      .from("follows")
+      .select("follower_id, following_id")
+      .or(`and(follower_id.eq.${user.id},following_id.eq.${targetUserId}),and(follower_id.eq.${targetUserId},following_id.eq.${user.id})`);
+
+    if (error) {
+      console.error("[getFollowStatus] Error:", error);
+      return { isFollowing: false, isFollowedBy: false };
+    }
+
+    const isFollowing = data?.some(f => f.follower_id === user.id && f.following_id === targetUserId) || false;
+    const isFollowedBy = data?.some(f => f.follower_id === targetUserId && f.following_id === user.id) || false;
+
+    return { isFollowing, isFollowedBy };
+  } catch (err) {
+    console.error("[getFollowStatus] Exception:", err);
+    return { isFollowing: false, isFollowedBy: false };
+  }
+};
+
 export const getFollowers = async (userId: string) => {
   const { data, error } = await supabase
     .from("follows")

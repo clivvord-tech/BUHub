@@ -2,7 +2,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserProfile, getUserPosts } from "../../../../../services/profile";
-import { followUser, unfollowUser, checkIfFollowing } from "../../../../../services/follow";
+import { followUser, unfollowUser, getFollowStatus } from "../../../../../services/follow";
 import { ProfileStats, Tweet } from "../../../../../types/types";
 import Image from "next/image";
 import { IoArrowBack } from "react-icons/io5";
@@ -27,6 +27,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<ProfileStats | null>(null);
   const [posts, setPosts] = useState<Tweet[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowedBy, setIsFollowedBy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -58,9 +59,10 @@ export default function ProfilePage() {
       console.log('Checking follow status for:', profileResult.data.username);
       console.log('Current user ID:', currentUser.id);
       console.log('Profile user ID:', profileResult.data.id);
-      const following = await checkIfFollowing(profileResult.data.id);
-      console.log('Follow status result:', following);
-      setIsFollowing(following);
+      const status = await getFollowStatus(profileResult.data.id);
+      console.log('Follow status result:', status);
+      setIsFollowing(status.isFollowing);
+      setIsFollowedBy(status.isFollowedBy);
     } else {
       console.log('Skipping follow check:', { 
         hasCurrentUser: !!currentUser?.id, 
@@ -100,9 +102,10 @@ export default function ProfilePage() {
 
       // Verify the follow status after action
       setTimeout(async () => {
-        const actualStatus = await checkIfFollowing(profile.id);
+        const actualStatus = await getFollowStatus(profile.id);
         console.log("Follow status after action:", actualStatus);
-        setIsFollowing(actualStatus);
+        setIsFollowing(actualStatus.isFollowing);
+        setIsFollowedBy(actualStatus.isFollowedBy);
       }, 300);
     } catch (err) {
       console.error("Follow/unfollow exception:", err);
@@ -170,7 +173,13 @@ export default function ProfilePage() {
                     : "bg-white text-black hover:bg-gray-200"
                 }`}
               >
-                {isFollowLoading ? "..." : isFollowing ? (isHoveringFollow ? "Unfollow" : "Following") : "Follow"}
+                {isFollowLoading 
+                  ? "..." 
+                  : isFollowing 
+                    ? (isHoveringFollow ? "Unfollow" : "Following") 
+                    : isFollowedBy 
+                      ? "Follow Back" 
+                      : "Follow"}
               </button>
             ) : (
               <button 
