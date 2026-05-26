@@ -37,7 +37,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     loadProfile();
-  }, [username]);
+  }, [username, currentUser?.id]); // Re-run when currentUser loads
 
   const loadProfile = async () => {
     setIsLoading(true);
@@ -55,8 +55,17 @@ export default function ProfilePage() {
     }
 
     if (currentUser?.id && currentUser.id !== profileResult.data.id) {
+      console.log('Checking follow status for:', profileResult.data.username);
+      console.log('Current user ID:', currentUser.id);
+      console.log('Profile user ID:', profileResult.data.id);
       const following = await checkIfFollowing(profileResult.data.id);
+      console.log('Follow status result:', following);
       setIsFollowing(following);
+    } else {
+      console.log('Skipping follow check:', { 
+        hasCurrentUser: !!currentUser?.id, 
+        isOwnProfile: currentUser?.id === profileResult.data.id 
+      });
     }
 
     setIsLoading(false);
