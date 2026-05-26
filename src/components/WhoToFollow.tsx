@@ -4,6 +4,7 @@ import { supabase } from "../../lib/SupabaseClient";
 import Link from "next/link";
 import Image from "next/image";
 import { followUser, checkIfFollowing } from "../../services/follow";
+import OwnerBadge from "./OwnerBadge";
 
 type User = {
   id: string;
@@ -93,7 +94,10 @@ export default function WhoToFollow() {
                 className="w-10 h-10 rounded-full object-cover"
               />
               <div className="flex-1 min-w-0">
-                <p className="text-white font-semibold truncate">{user.name}</p>
+                <div className="flex items-center gap-1">
+                  <p className="text-white font-semibold truncate">{user.name}</p>
+                  <OwnerBadge isOwner={user.is_owner} size="sm" />
+                </div>
                 <p className="text-secondary-text text-sm truncate">@{user.username}</p>
               </div>
             </Link>

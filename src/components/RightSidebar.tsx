@@ -6,6 +6,7 @@ import { FaUser } from 'react-icons/fa6'
 import { BiMessageSquareDetail } from 'react-icons/bi'
 import TrendingHashtags from './TrendingHashtags'
 import WhoToFollow from './WhoToFollow'
+import OwnerBadge from './OwnerBadge'
 import { searchAll, SearchResult } from '../../services/search'
 import Image from 'next/image'
 
@@ -142,7 +143,10 @@ export default function RightSidebar() {
                             )}
                           </div>
                           <div className='flex-1 min-w-0'>
-                            <div className='font-bold text-white truncate'>{result.name}</div>
+                            <div className='flex items-center gap-1'>
+                              <span className='font-bold text-white truncate'>{result.name}</span>
+                              <OwnerBadge isOwner={result.is_owner || false} size="sm" />
+                            </div>
                             <div className='text-secondary-text text-sm truncate'>@{result.username}</div>
                           </div>
                         </>

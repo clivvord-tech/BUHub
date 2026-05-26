@@ -9,6 +9,7 @@ export interface SearchResult {
   avatar_url?: string;
   image_url?: string;
   created_at?: string;
+  is_owner?: boolean;
 }
 
 export async function searchAll(query: string): Promise<SearchResult[]> {
@@ -19,7 +20,7 @@ export async function searchAll(query: string): Promise<SearchResult[]> {
   // Search users
   const { data: users } = await supabase
     .from('profiles')
-    .select('id, username, name, avatar_url')
+    .select('id, username, name, avatar_url, is_owner')
     .or(`username.ilike.${searchTerm},name.ilike.${searchTerm}`)
     .limit(5);
 
@@ -41,7 +42,8 @@ export async function searchAll(query: string): Promise<SearchResult[]> {
         id: user.id,
         username: user.username,
         name: user.name,
-        avatar_url: user.avatar_url
+        avatar_url: user.avatar_url,
+        is_owner: user.is_owner
       });
     });
   }
