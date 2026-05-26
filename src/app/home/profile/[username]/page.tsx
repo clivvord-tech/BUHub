@@ -29,7 +29,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+  const [isHoveringFollow, setIsHoveringFollow] = useState(false);
 
   const isOwnProfile = currentUser?.id === profile?.id;
 
@@ -126,6 +126,8 @@ export default function ProfilePage() {
             {!isOwnProfile ? (
               <button
                 onClick={handleFollow}
+                onMouseEnter={() => setIsHoveringFollow(true)}
+                onMouseLeave={() => setIsHoveringFollow(false)}
                 disabled={isFollowLoading}
                 className={`mt-16 px-6 py-2 rounded-full font-bold transition-all ${
                   isFollowing
@@ -133,7 +135,7 @@ export default function ProfilePage() {
                     : "bg-white text-black hover:bg-gray-200"
                 }`}
               >
-                {isFollowLoading ? "..." : isFollowing ? "Following" : "Follow"}
+                {isFollowLoading ? "..." : isFollowing ? (isHoveringFollow ? "Unfollow" : "Following") : "Follow"}
               </button>
             ) : (
               <button 
