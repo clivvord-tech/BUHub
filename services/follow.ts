@@ -113,6 +113,56 @@ export const getFollowStatus = async (targetUserId: string) => {
   }
 };
 
+// Batched follow status: given an array of target user ids, return a map of statuses.
+export const getFollowStatuses = async (targetUserIds: string[]) => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return {};
+
+    const currentUserId = user.id;
+
+    // Query which targets the current user is following
+    const { data: followingData, error: followingError } = await supabase
+      .from('follows')
+      .select('following_id')
+      .eq('follower_id', currentUserId)
+      .in('following_id', targetUserIds);
+
+    if (followingError) {
+      console.error('[getFollowStatuses] following query error:', followingError);
+      return {};
+    }
+
+    // Query which targets follow the current user
+    const { data: followedByData, error: followedByError } = await supabase
+      .from('follows')
+      .select('follower_id')
+      .eq('following_id', currentUserId)
+      .in('follower_id', targetUserIds);
+
+    if (followedByError) {
+      console.error('[getFollowStatuses] followedBy query error:', followedByError);
+      return {};
+    }
+
+    const followingSet = new Set((followingData || []).map((r: any) => r.following_id));
+    const followedBySet = new Set((followedByData || []).map((r: any) => r.follower_id));
+
+    const result: Record<string, { isFollowing: boolean; isFollowedBy: boolean }> = {};
+    for (const id of targetUserIds) {
+      result[id] = {
+        isFollowing: followingSet.has(id),
+        isFollowedBy: followedBySet.has(id),
+      };
+    }
+
+    return result;
+  } catch (err) {
+    console.error('[getFollowStatuses] Exception:', err);
+    return {};
+  }
+};
+
 export const getFollowers = async (userId: string) => {
   const { data, error } = await supabase
     .from("follows")

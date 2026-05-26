@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { searchUsers, startConversation } from '@/lib/messages';
 import Image from 'next/image';
 import { FiX, FiSearch } from 'react-icons/fi';
 
@@ -15,31 +14,16 @@ export default function NewMessageModal({ onClose, onConversationCreated }: NewM
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // Messaging feature removed: these handlers are no-ops to avoid runtime errors
   const handleSearch = async (searchQuery: string) => {
     setQuery(searchQuery);
-    if (searchQuery.trim().length < 2) {
-      setUsers([]);
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const results = await searchUsers(searchQuery);
-      setUsers(results);
-    } catch (error) {
-      console.error('Error searching users:', error);
-    } finally {
-      setLoading(false);
-    }
+    // Feature removed - do not attempt to search users
+    setUsers([]);
   };
 
-  const handleSelectUser = async (userId: string) => {
-    try {
-      const conversationId = await startConversation(userId);
-      onConversationCreated(conversationId);
-    } catch (error) {
-      console.error('Error starting conversation:', error);
-    }
+  const handleSelectUser = async (_userId: string) => {
+    // Feature removed - starting conversations is disabled
+    console.warn('Messaging feature removed; cannot start a conversation.');
   };
 
   return (

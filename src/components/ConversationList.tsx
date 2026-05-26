@@ -1,8 +1,21 @@
 'use client';
 
-import { type Conversation } from '@/lib/messages';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
+
+// Local conversation type to avoid depending on the removed messages library
+type Conversation = {
+  id: string;
+  participants: Array<{
+    id: string;
+    username?: string;
+    name?: string;
+    avatar_url?: string | null;
+    is_owner?: boolean;
+  }>;
+  last_message?: { created_at: string; content?: string } | null;
+  unread_count: number;
+};
 
 interface ConversationListProps {
   conversations: Conversation[];

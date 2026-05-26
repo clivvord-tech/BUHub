@@ -29,7 +29,6 @@ export default function MobileBottomNav() {
     { href: "/home", label: "Home", icon: GoHome, activeIcon: GoHomeFill },
     { href: "/home/explore", label: "Explore", icon: IoSearchOutline, activeIcon: IoSearch },
     { href: "/home/notifications", label: "Notifications", icon: BiBell, activeIcon: IoNotifications, badge: unreadCount },
-    { href: "/home/messages", label: "Messages", icon: BiEnvelope, activeIcon: IoMail, prefetch: false },
   ];
 
   return (
@@ -43,7 +42,7 @@ export default function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
-              prefetch={item.prefetch !== false}
+              prefetch={(item as any).prefetch !== false}
               className="flex flex-col items-center justify-center flex-1 h-full relative"
             >
               <div className="relative">
@@ -60,6 +59,13 @@ export default function MobileBottomNav() {
             </Link>
           );
         })}
+        {/* Messages - disabled (coming soon) */}
+        <div className="flex flex-col items-center justify-center flex-1 h-full relative cursor-not-allowed opacity-50">
+          <div className="relative">
+            <BiEnvelope size={24} className={"text-secondary-text"} />
+          </div>
+          <span className={`text-xs mt-1 text-secondary-text`}>Messages</span>
+        </div>
       </div>
     </nav>
   );

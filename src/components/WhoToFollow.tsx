@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/SupabaseClient";
 import Link from "next/link";
 import Image from "next/image";
-import { followUser, getFollowStatus } from "../../services/follow";
+import { getFollowStatuses } from "../../services/follow";
+import FollowButton from "./FollowButton";
 import OwnerBadge from "./OwnerBadge";
 
 type User = {
@@ -52,38 +53,17 @@ export default function WhoToFollow() {
       const suggestions = data.filter(u => !followingIds.includes(u.id)).slice(0, 3);
       setUsers(suggestions);
       
-      // Get follow status for each user
-      const status: Record<string, FollowStatus> = {};
-      for (const suggestedUser of suggestions) {
-        status[suggestedUser.id] = await getFollowStatus(suggestedUser.id);
+      // Get follow statuses in batch (single pair of queries)
+      const ids = suggestions.map(u => u.id);
+      const statuses = await getFollowStatuses(ids);
+      const statusMap: Record<string, FollowStatus> = {};
+      for (const id of ids) {
+        statusMap[id] = statuses[id] || { isFollowing: false, isFollowedBy: false };
       }
-      setFollowStatus(status);
+      setFollowStatus(statusMap);
     }
   };
 
-  const handleFollow = async (userId: string) => {
-    setLoadingStates(prev => ({ ...prev, [userId]: true }));
-    
-    const result = await followUser(userId);
-    
-    if (result.success) {
-      // Update local state
-      setFollowStatus(prev => ({ 
-        ...prev, 
-        [userId]: { ...prev[userId], isFollowing: true } 
-      }));
-      
-      // Reload suggestions after a short delay
-      setTimeout(() => {
-        loadSuggestions();
-      }, 500);
-    } else {
-      console.error("Follow failed:", result.error);
-      alert(result.error || "Failed to follow user");
-    }
-    
-    setLoadingStates(prev => ({ ...prev, [userId]: false }));
-  };
 
   const getButtonText = (status: FollowStatus) => {
     if (status.isFollowing) return "Following";
@@ -115,18 +95,21 @@ export default function WhoToFollow() {
                 <p className="text-secondary-text text-sm truncate">@{user.username}</p>
               </div>
             </Link>
-            {!followStatus[user.id]?.isFollowing && (
-              <button
-                onClick={() => handleFollow(user.id)}
-                disabled={loadingStates[user.id]}
-                className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loadingStates[user.id] ? "..." : getButtonText(followStatus[user.id] || { isFollowing: false, isFollowedBy: false })}
-              </button>
-            )}
-            {followStatus[user.id]?.isFollowing && (
-              <span className="text-secondary-text text-sm">Following</span>
-            )}
+            <FollowButton
+              targetUserId={user.id}
+              initialIsFollowing={followStatus[user.id]?.isFollowing}
+              initialIsFollowedBy={followStatus[user.id]?.isFollowedBy}
+              showAsTextWhenFollowing
+              ariaLabel={`${user.name} (@${user.username})`}
+              onChange={(status, action) => {
+                setFollowStatus(prev => ({ ...prev, [user.id]: status }));
+                if (action === "follow" || action === "unfollow") {
+                  // refresh suggestions shortly after a change
+                  setTimeout(() => loadSuggestions(), 500);
+                }
+              }}
+              className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            />
           </div>
         ))}
       </div>

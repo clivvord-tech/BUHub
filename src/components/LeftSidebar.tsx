@@ -58,10 +58,11 @@ export default function LeftSidebar() {
               <span className='hidden lg:inline text-xl'>Notifications</span>
             </Link>
 
-            <Link href="/home/messages" prefetch={false} className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
+            <div className="flex items-center gap-3 p-3 rounded-full hover:bg-hover text-gray-400 cursor-not-allowed">
               <BiEnvelope size={26} />
-              <span className='hidden lg:inline text-xl'>Messages</span>
-            </Link>
+              <span className="hidden lg:inline text-xl">Messages</span>
+              <span className="ml-auto bg-gray-700 text-xs px-2 py-0.5 rounded">Soon</span>
+            </div>
 
             <div className='text-secondary-text flex items-center lg:gap-3 p-3 rounded-full opacity-50 cursor-not-allowed' title='Coming Soon'>
               <BsPeople size={26} />

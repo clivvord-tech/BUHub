@@ -2,7 +2,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserProfile, getUserPosts } from "../../../../../services/profile";
-import { followUser, unfollowUser, getFollowStatus } from "../../../../../services/follow";
+import { getFollowStatus } from "../../../../../services/follow";
 import { ProfileStats, Tweet } from "../../../../../types/types";
 import Image from "next/image";
 import { IoArrowBack } from "react-icons/io5";
@@ -10,6 +10,7 @@ import { BsPinFill } from "react-icons/bs";
 import { FiRepeat } from "react-icons/fi";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "@/components/OwnerBadge";
+import FollowButton from "@/components/FollowButton";
 import TweetActions from "@/components/TweetActions";
 import PostOptionsMenu from "@/components/PostOptionsMenu";
 import EditProfileModal from "@/components/EditProfileModal";
@@ -29,10 +30,8 @@ export default function ProfilePage() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isFollowedBy, setIsFollowedBy] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
-  const [isHoveringFollow, setIsHoveringFollow] = useState(false);
 
   const isOwnProfile = currentUser?.id === profile?.id;
 
@@ -73,47 +72,7 @@ export default function ProfilePage() {
     setIsLoading(false);
   };
 
-  const handleFollow = async () => {
-    if (!profile) return;
-    setIsFollowLoading(true);
-
-    try {
-      if (isFollowing) {
-        const result = await unfollowUser(profile.id);
-        if (result.error) {
-          console.error("Unfollow error:", result.error);
-          alert("Failed to unfollow user");
-          setIsFollowLoading(false);
-          return;
-        }
-        setIsFollowing(false);
-        setProfile({ ...profile, followers_count: profile.followers_count - 1 });
-      } else {
-        const result = await followUser(profile.id);
-        if (result.error) {
-          console.error("Follow error:", result.error);
-          alert("Failed to follow user");
-          setIsFollowLoading(false);
-          return;
-        }
-        setIsFollowing(true);
-        setProfile({ ...profile, followers_count: profile.followers_count + 1 });
-      }
-
-      // Verify the follow status after action
-      setTimeout(async () => {
-        const actualStatus = await getFollowStatus(profile.id);
-        console.log("Follow status after action:", actualStatus);
-        setIsFollowing(actualStatus.isFollowing);
-        setIsFollowedBy(actualStatus.isFollowedBy);
-      }, 300);
-    } catch (err) {
-      console.error("Follow/unfollow exception:", err);
-      alert("An error occurred");
-    }
-
-    setIsFollowLoading(false);
-  };
+  // Follow/unfollow handled by FollowButton; keep initial status load in loadProfile
 
   if (isLoading) {
     return (
@@ -162,25 +121,26 @@ export default function ProfilePage() {
               />
             </button>
             {!isOwnProfile ? (
-              <button
-                onClick={handleFollow}
-                onMouseEnter={() => setIsHoveringFollow(true)}
-                onMouseLeave={() => setIsHoveringFollow(false)}
-                disabled={isFollowLoading}
+              <FollowButton
+                targetUserId={profile.id}
+                initialIsFollowing={isFollowing}
+                initialIsFollowedBy={isFollowedBy}
+                ariaLabel={`${profile.name} (@${profile.username})`}
+                onChange={(status, action) => {
+                  setIsFollowing(status.isFollowing);
+                  setIsFollowedBy(status.isFollowedBy);
+                  if (action === 'follow') {
+                    setProfile(prev => prev ? { ...prev, followers_count: (prev.followers_count || 0) + 1 } : prev);
+                  } else if (action === 'unfollow') {
+                    setProfile(prev => prev ? { ...prev, followers_count: Math.max((prev.followers_count || 1) - 1, 0) } : prev);
+                  }
+                }}
                 className={`mt-16 px-6 py-2 rounded-full font-bold transition-all ${
                   isFollowing
                     ? "bg-transparent border border-border text-white hover:bg-red-500/10 hover:border-red-500 hover:text-red-500"
                     : "bg-white text-black hover:bg-gray-200"
                 }`}
-              >
-                {isFollowLoading 
-                  ? "..." 
-                  : isFollowing 
-                    ? (isHoveringFollow ? "Unfollow" : "Following") 
-                    : isFollowedBy 
-                      ? "Follow Back" 
-                      : "Follow"}
-              </button>
+              />
             ) : (
               <button 
                 onClick={() => setIsEditModalOpen(true)}
