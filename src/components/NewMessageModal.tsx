@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { searchUsers, startConversation } from '@/services/messages';
+import { searchUsers, startConversation } from '@/lib/messages';
 import Image from 'next/image';
 import { FiX, FiSearch } from 'react-icons/fi';
 

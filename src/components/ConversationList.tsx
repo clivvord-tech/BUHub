@@ -1,6 +1,6 @@
 'use client';
 
-import { type Conversation } from '@/services/messages';
+import { type Conversation } from '@/lib/messages';
 import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 

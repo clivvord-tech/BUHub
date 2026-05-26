@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/lib/SupabaseClient';
+import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
 export interface Message {
@@ -173,7 +173,7 @@ export async function sendMessage(conversationId: string, content: string, image
 
   if (error) throw error;
 
-  revalidatePath('/messages');
+  revalidatePath('/home/messages');
   return data as Message;
 }
 
@@ -192,7 +192,7 @@ export async function markAsRead(conversationId: string) {
 
   if (error) throw error;
 
-  revalidatePath('/messages');
+  revalidatePath('/home/messages');
 }
 
 // Start a new conversation
@@ -209,7 +209,7 @@ export async function startConversation(otherUserId: string) {
 
   if (error) throw error;
 
-  revalidatePath('/messages');
+  revalidatePath('/home/messages');
   return data as string;
 }
 

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { getMessages, sendMessage, markAsRead, updateTypingIndicator, type Message } from '@/services/messages';
-import { createClient } from '@/lib/SupabaseClient';
+import { getMessages, sendMessage, markAsRead, updateTypingIndicator, type Message } from '@/lib/messages';
+import { createClient } from '@/lib/supabase/client';
 import Image from 'next/image';
 import { FiArrowLeft, FiSend, FiImage } from 'react-icons/fi';
 import { formatDistanceToNow } from 'date-fns';
@@ -42,7 +42,7 @@ export default function ChatWindow({ conversationId, onBack, onMessageSent }: Ch
       setMessages(data);
       
       if (data.length > 0) {
-        const supabase = await createClient();
+        const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
         const firstMessage = data[0];
         const otherUserId = firstMessage.sender_id === user?.id 
@@ -64,7 +64,7 @@ export default function ChatWindow({ conversationId, onBack, onMessageSent }: Ch
   };
 
   const subscribeToMessages = async () => {
-    const supabase = await createClient();
+    const supabase = createClient();
     const channel = supabase
       .channel(`messages:${conversationId}`)
       .on('postgres_changes', 
@@ -93,7 +93,7 @@ export default function ChatWindow({ conversationId, onBack, onMessageSent }: Ch
   };
 
   const subscribeToTyping = async () => {
-    const supabase = await createClient();
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     
     const channel = supabase
@@ -189,7 +189,6 @@ export default function ChatWindow({ conversationId, onBack, onMessageSent }: Ch
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => {
-          const supabase = createClient();
           const isOwn = message.sender_id === otherUser?.id ? false : true;
 
           return (

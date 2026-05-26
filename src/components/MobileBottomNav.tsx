@@ -29,7 +29,7 @@ export default function MobileBottomNav() {
     { href: "/home", label: "Home", icon: GoHome, activeIcon: GoHomeFill },
     { href: "/home/explore", label: "Explore", icon: IoSearchOutline, activeIcon: IoSearch },
     { href: "/home/notifications", label: "Notifications", icon: BiBell, activeIcon: IoNotifications, badge: unreadCount },
-    { href: "/home/messages", label: "Messages", icon: BiEnvelope, activeIcon: IoMail },
+    { href: "/home/messages", label: "Messages", icon: BiEnvelope, activeIcon: IoMail, prefetch: false },
   ];
 
   return (
@@ -43,6 +43,7 @@ export default function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={item.prefetch !== false}
               className="flex flex-col items-center justify-center flex-1 h-full relative"
             >
               <div className="relative">

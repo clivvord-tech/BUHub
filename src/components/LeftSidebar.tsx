@@ -58,7 +58,7 @@ export default function LeftSidebar() {
               <span className='hidden lg:inline text-xl'>Notifications</span>
             </Link>
 
-            <Link href="/home/messages" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
+            <Link href="/home/messages" prefetch={false} className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>
               <BiEnvelope size={26} />
               <span className='hidden lg:inline text-xl'>Messages</span>
             </Link>
