@@ -6,6 +6,7 @@ import { BsPinAngle } from "react-icons/bs";
 import { useDeleteTweet } from "../../custom-hooks/useTweet";
 import { useRouter } from "next/navigation";
 import { pinPost } from "../../services/repost";
+import PostAnalyticsModal from "./PostAnalyticsModal";
 
 type PostOptionsMenuProps = {
   tweetId: string;
@@ -29,6 +30,7 @@ export default function PostOptionsMenu({
   isPinned = false,
 }: PostOptionsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [showAnalytics, setShowAnalytics] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { mutate } = useDeleteTweet();
   const router = useRouter();
@@ -76,164 +78,175 @@ export default function PostOptionsMenu({
     window.location.reload();
   };
 
+  const handleViewAnalytics = () => {
+    setIsOpen(false);
+    setShowAnalytics(true);
+  };
+
   const isOwnPost = creatorId === currentUserId;
 
   return (
-    <div className="relative" ref={menuRef}>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsOpen(!isOpen);
-        }}
-        className="text-secondary-text hover:text-primary hover:bg-primary/10 rounded-full p-2 transition-colors"
-      >
-        <BsThreeDots size={18} />
-      </button>
+    <>
+      <div className="relative" ref={menuRef}>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsOpen(!isOpen);
+          }}
+          className="text-secondary-text hover:text-primary hover:bg-primary/10 rounded-full p-2 transition-colors"
+        >
+          <BsThreeDots size={18} />
+        </button>
 
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-background border border-border rounded-lg shadow-lg z-50">
-          {isOwnPost ? (
-            // Own post menu
-            <>
-              <button
-                onClick={handleDelete}
-                className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaTrash size={16} />
-                <span className="font-semibold">Delete</span>
-              </button>
-              {!isComment && (
+        {isOpen && (
+          <div className="absolute right-0 mt-2 w-64 bg-background border border-border rounded-lg shadow-lg z-50">
+            {isOwnPost ? (
+              <>
                 <button
-                  onClick={handlePin}
+                  onClick={handleDelete}
+                  className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaTrash size={16} />
+                  <span className="font-semibold">Delete</span>
+                </button>
+                {!isComment && (
+                  <button
+                    onClick={handlePin}
+                    className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                  >
+                    <BsPinAngle size={16} />
+                    <span className="font-semibold">{isPinned ? "Unpin from profile" : "Pin to your profile"}</span>
+                  </button>
+                )}
+                <button
+                  onClick={handleViewAnalytics}
                   className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
                 >
-                  <BsPinAngle size={16} />
-                  <span className="font-semibold">{isPinned ? "Unpin from profile" : "Pin to your profile"}</span>
+                  <FaChartBar size={16} />
+                  <span className="font-semibold">View post activity</span>
                 </button>
-              )}
-              <button
-                onClick={() => alert("View post activity - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaChartBar size={16} />
-                <span className="font-semibold">View post activity</span>
-              </button>
-              <button
-                onClick={() => alert("Embed post - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaCode size={16} />
-                <span className="font-semibold">Embed post</span>
-              </button>
-            </>
-          ) : isTweetPostViewPage ? (
-            // Other's post on detail page (no delete)
-            <>
-              <button
-                onClick={() => alert(`Follow @${creatorUsername} - Coming soon`)}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaUserPlus size={16} />
-                <span className="font-semibold">Follow @{creatorUsername}</span>
-              </button>
-              <button
-                onClick={() => alert(`Mute @${creatorUsername} - Coming soon`)}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaVolumeXmark size={16} />
-                <span className="font-semibold">Mute</span>
-              </button>
-              <button
-                onClick={() => alert("Mute this conversation - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaVolumeXmark size={16} />
-                <span className="font-semibold">Mute this conversation</span>
-              </button>
-              <button
-                onClick={() => alert(`Block @${creatorUsername} - Coming soon`)}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaBan size={16} />
-                <span className="font-semibold">Block @{creatorUsername}</span>
-              </button>
-              <button
-                onClick={() => alert("View post activity - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaChartBar size={16} />
-                <span className="font-semibold">View post activity</span>
-              </button>
-              <button
-                onClick={() => alert("Embed post - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaCode size={16} />
-                <span className="font-semibold">Embed post</span>
-              </button>
-              <button
-                onClick={() => alert("Report post - Coming soon")}
-                className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaFlag size={16} />
-                <span className="font-semibold">Report post</span>
-              </button>
-            </>
-          ) : (
-            // Other's post on home page
-            <>
-              <button
-                onClick={() => alert("Not interested - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <span className="font-semibold">Not interested in this post</span>
-              </button>
-              <button
-                onClick={() => alert(`Follow @${creatorUsername} - Coming soon`)}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaUserPlus size={16} />
-                <span className="font-semibold">Follow @{creatorUsername}</span>
-              </button>
-              <button
-                onClick={() => alert(`Mute @${creatorUsername} - Coming soon`)}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaVolumeXmark size={16} />
-                <span className="font-semibold">Mute</span>
-              </button>
-              <button
-                onClick={() => alert(`Block @${creatorUsername} - Coming soon`)}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaBan size={16} />
-                <span className="font-semibold">Block @{creatorUsername}</span>
-              </button>
-              <button
-                onClick={() => alert("View post activity - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaChartBar size={16} />
-                <span className="font-semibold">View post activity</span>
-              </button>
-              <button
-                onClick={() => alert("Embed post - Coming soon")}
-                className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaCode size={16} />
-                <span className="font-semibold">Embed post</span>
-              </button>
-              <button
-                onClick={() => alert("Report post - Coming soon")}
-                className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
-              >
-                <FaFlag size={16} />
-                <span className="font-semibold">Report post</span>
-              </button>
-            </>
-          )}
-        </div>
+                <button
+                  onClick={() => alert("Embed post - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaCode size={16} />
+                  <span className="font-semibold">Embed post</span>
+                </button>
+              </>
+            ) : isTweetPostViewPage ? (
+              <>
+                <button
+                  onClick={() => alert(`Follow @${creatorUsername} - Coming soon`)}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaUserPlus size={16} />
+                  <span className="font-semibold">Follow @{creatorUsername}</span>
+                </button>
+                <button
+                  onClick={() => alert(`Mute @${creatorUsername} - Coming soon`)}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaVolumeXmark size={16} />
+                  <span className="font-semibold">Mute</span>
+                </button>
+                <button
+                  onClick={() => alert("Mute this conversation - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaVolumeXmark size={16} />
+                  <span className="font-semibold">Mute this conversation</span>
+                </button>
+                <button
+                  onClick={() => alert(`Block @${creatorUsername} - Coming soon`)}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaBan size={16} />
+                  <span className="font-semibold">Block @{creatorUsername}</span>
+                </button>
+                <button
+                  onClick={handleViewAnalytics}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaChartBar size={16} />
+                  <span className="font-semibold">View post activity</span>
+                </button>
+                <button
+                  onClick={() => alert("Embed post - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaCode size={16} />
+                  <span className="font-semibold">Embed post</span>
+                </button>
+                <button
+                  onClick={() => alert("Report post - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaFlag size={16} />
+                  <span className="font-semibold">Report post</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => alert("Not interested - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <span className="font-semibold">Not interested in this post</span>
+                </button>
+                <button
+                  onClick={() => alert(`Follow @${creatorUsername} - Coming soon`)}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaUserPlus size={16} />
+                  <span className="font-semibold">Follow @{creatorUsername}</span>
+                </button>
+                <button
+                  onClick={() => alert(`Mute @${creatorUsername} - Coming soon`)}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaVolumeXmark size={16} />
+                  <span className="font-semibold">Mute</span>
+                </button>
+                <button
+                  onClick={() => alert(`Block @${creatorUsername} - Coming soon`)}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaBan size={16} />
+                  <span className="font-semibold">Block @{creatorUsername}</span>
+                </button>
+                <button
+                  onClick={handleViewAnalytics}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaChartBar size={16} />
+                  <span className="font-semibold">View post activity</span>
+                </button>
+                <button
+                  onClick={() => alert("Embed post - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-white hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaCode size={16} />
+                  <span className="font-semibold">Embed post</span>
+                </button>
+                <button
+                  onClick={() => alert("Report post - Coming soon")}
+                  className="w-full px-4 py-3 text-left text-red-500 hover:bg-hover transition-colors flex items-center gap-3"
+                >
+                  <FaFlag size={16} />
+                  <span className="font-semibold">Report post</span>
+                </button>
+              </>
+            )}
+          </div>
+        )}
+      </div>
+
+      {showAnalytics && (
+        <PostAnalyticsModal
+          postId={tweetId}
+          onClose={() => setShowAnalytics(false)}
+        />
       )}
-    </div>
+    </>
   );
 }

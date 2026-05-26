@@ -49,11 +49,14 @@ export default function TweetActions({
   const [viewCount, setViewCount] = useState(0);
 
   useEffect(() => {
+    // Always fetch view count for all users
+    getPostViewCount(tweetId).then(setViewCount);
+    getRepostCount(tweetId).then(setRepostCount);
+    
+    // Only fetch user-specific data if logged in
     if (userId) {
       checkIfBookmarked(tweetId).then(setIsBookmarked);
       checkIfReposted(tweetId).then(setIsReposted);
-      getRepostCount(tweetId).then(setRepostCount);
-      getPostViewCount(tweetId).then(setViewCount);
     }
   }, [tweetId, userId]);
 
@@ -173,7 +176,7 @@ export default function TweetActions({
           isBookmarked ? 'text-primary' : 'text-secondary-text hover:text-primary'
         }`}
       >
-        {isBookmarked ? <FaBookmark size={20} /> : <FaRegBookmark size={20} />}
+        {isBookmarked ? <FaBookmark /> : <FaRegBookmark />}
       </button>
     </div>
   );

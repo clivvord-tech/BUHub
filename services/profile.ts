@@ -39,7 +39,8 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
   const from = page * pageSize;
   const to = from + pageSize - 1;
 
-  const { data, error } = await supabase
+  // Fetch original posts by the user
+  const { data: originalPosts, error: postsError } = await supabase
     .from("posts")
     .select(`
       id,
@@ -59,19 +60,94 @@ export const getUserPosts = async (userId: string, page = 0, pageSize = 10) => {
       )
     `)
     .eq("user_id", userId)
-    .order("is_pinned", { ascending: false })
-    .order("created_at", { ascending: false })
-    .range(from, to);
+    .order("created_at", { ascending: false });
 
-  if (error) return { error: error.message };
-  
-  // Transform profiles from array to single object
-  const transformedData = data?.map(post => ({
+  if (postsError) return { error: postsError.message };
+
+  // Fetch reposts by the user
+  const { data: reposts, error: repostsError } = await supabase
+    .from("reposts")
+    .select(`
+      created_at,
+      user_id,
+      posts:tweet_id (
+        id,
+        content,
+        image_url,
+        image_path,
+        created_at,
+        user_id,
+        is_pinned,
+        profiles:user_id (
+          id,
+          username,
+          name,
+          avatar_url,
+          is_owner,
+          role
+        )
+      ),
+      reposter:user_id (
+        id,
+        username,
+        name,
+        avatar_url,
+        is_owner
+      )
+    `)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (repostsError) return { error: repostsError.message };
+
+  // Transform original posts
+  const transformedOriginalPosts = originalPosts?.map(post => ({
     ...post,
     profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
-  }));
-  
-  return { data: transformedData };
+  })) || [];
+
+  // Transform reposts to match Tweet structure
+  const transformedReposts = reposts?.map(repost => {
+    const post = Array.isArray(repost.posts) ? repost.posts[0] : repost.posts;
+    const reposter = Array.isArray(repost.reposter) ? repost.reposter[0] : repost.reposter;
+    
+    return {
+      ...post,
+      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles,
+      reposted_by: reposter,
+      repost_created_at: repost.created_at,
+    };
+  }).filter(post => post.id) || []; // Filter out any null posts
+
+  // Combine and sort by date (original post date for originals, repost date for reposts)
+  const allPosts = [
+    ...transformedOriginalPosts.map(post => ({
+      ...post,
+      sort_date: post.created_at
+    })),
+    ...transformedReposts.map(post => ({
+      ...post,
+      sort_date: post.repost_created_at || post.created_at
+    }))
+  ];
+
+  // Sort by date (pinned posts first, then by date)
+  allPosts.sort((a, b) => {
+    // Pinned posts always come first
+    if (a.is_pinned && !b.is_pinned) return -1;
+    if (!a.is_pinned && b.is_pinned) return 1;
+    
+    // Then sort by date
+    return new Date(b.sort_date).getTime() - new Date(a.sort_date).getTime();
+  });
+
+  // Apply pagination
+  const paginatedPosts = allPosts.slice(from, to + 1);
+
+  // Remove sort_date helper field
+  const finalPosts = paginatedPosts.map(({ sort_date, ...post }) => post);
+
+  return { data: finalPosts };
 };
 
 export const updateUserProfile = async (updates: {

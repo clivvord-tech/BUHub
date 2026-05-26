@@ -7,6 +7,7 @@ import { ProfileStats, Tweet } from "../../../../../types/types";
 import Image from "next/image";
 import { IoArrowBack } from "react-icons/io5";
 import { BsPinFill } from "react-icons/bs";
+import { FiRepeat } from "react-icons/fi";
 import { SpinnerCircularFixed } from "spinners-react";
 import OwnerBadge from "@/components/OwnerBadge";
 import TweetActions from "@/components/TweetActions";
@@ -65,14 +66,38 @@ export default function ProfilePage() {
     if (!profile) return;
     setIsFollowLoading(true);
 
-    if (isFollowing) {
-      await unfollowUser(profile.id);
-      setIsFollowing(false);
-      setProfile({ ...profile, followers_count: profile.followers_count - 1 });
-    } else {
-      await followUser(profile.id);
-      setIsFollowing(true);
-      setProfile({ ...profile, followers_count: profile.followers_count + 1 });
+    try {
+      if (isFollowing) {
+        const result = await unfollowUser(profile.id);
+        if (result.error) {
+          console.error("Unfollow error:", result.error);
+          alert("Failed to unfollow user");
+          setIsFollowLoading(false);
+          return;
+        }
+        setIsFollowing(false);
+        setProfile({ ...profile, followers_count: profile.followers_count - 1 });
+      } else {
+        const result = await followUser(profile.id);
+        if (result.error) {
+          console.error("Follow error:", result.error);
+          alert("Failed to follow user");
+          setIsFollowLoading(false);
+          return;
+        }
+        setIsFollowing(true);
+        setProfile({ ...profile, followers_count: profile.followers_count + 1 });
+      }
+
+      // Verify the follow status after action
+      setTimeout(async () => {
+        const actualStatus = await checkIfFollowing(profile.id);
+        console.log("Follow status after action:", actualStatus);
+        setIsFollowing(actualStatus);
+      }, 300);
+    } catch (err) {
+      console.error("Follow/unfollow exception:", err);
+      alert("An error occurred");
     }
 
     setIsFollowLoading(false);
@@ -197,8 +222,18 @@ export default function ProfilePage() {
           </div>
         ) : (
           posts.map((tweet) => (
-            <div key={tweet.id}>
-              {tweet.is_pinned && (
+            <div key={`${tweet.id}-${tweet.repost_created_at || tweet.created_at}`}>
+              {tweet.reposted_by && (
+                <div className="px-4 pt-2 flex items-center gap-2 text-secondary-text text-sm">
+                  <FiRepeat className="text-green-500" />
+                  <span>
+                    {tweet.reposted_by.id === currentUser?.id 
+                      ? 'You reposted' 
+                      : `@${tweet.reposted_by.username} reposted`}
+                  </span>
+                </div>
+              )}
+              {tweet.is_pinned && !tweet.reposted_by && (
                 <div className="px-4 pt-2 flex items-center gap-2 text-secondary-text text-sm">
                   <BsPinFill className="text-primary" />
                   <span>Pinned post</span>
@@ -225,32 +260,13 @@ export default function ProfilePage() {
                         : moment(tweet.created_at).format('MMM D')}
                     </span>
                   </div>
-                  {isOwnProfile && (
-                    <div className="flex items-center gap-2">
-                      <TweetActions
-                        creatorId={tweet.profiles.id}
-                        tweetId={tweet.id}
-                        imagePath={tweet.image_path}
-                        isTweetPostViewPage={false}
-                        isPinned={tweet.is_pinned}
-                        showOnlyPin={true}
-                      />
-                      <PostOptionsMenu
-                        tweetId={tweet.id}
-                        creatorId={tweet.profiles.id}
-                        currentUserId={currentUser?.id}
-                        imagePath={tweet.image_path}
-                      />
-                    </div>
-                  )}
-                  {!isOwnProfile && (
-                    <PostOptionsMenu
-                      tweetId={tweet.id}
-                      creatorId={tweet.profiles.id}
-                      currentUserId={currentUser?.id}
-                      imagePath={tweet.image_path}
-                    />
-                  )}
+                  {/* Always show three-dot menu - no conditions */}
+                  <PostOptionsMenu
+                    tweetId={tweet.id}
+                    creatorId={tweet.profiles.id}
+                    currentUserId={currentUser?.id}
+                    imagePath={tweet.image_path}
+                  />
                 </div>
                 {tweet.content && (
                   <Link

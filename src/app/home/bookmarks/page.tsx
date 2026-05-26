@@ -7,11 +7,14 @@ import { SpinnerCircularFixed } from "spinners-react";
 import { FaBookmark } from "react-icons/fa6";
 import OwnerBadge from "@/components/OwnerBadge";
 import TweetActions from "@/components/TweetActions";
+import PostOptionsMenu from "@/components/PostOptionsMenu";
 import moment from "moment";
+import { useUserSession } from "../../../../custom-hooks/useUserSession";
 
 export default function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { session } = useUserSession();
 
   useEffect(() => {
     loadBookmarks();
@@ -72,23 +75,35 @@ export default function BookmarksPage() {
                   />
                 </Link>
                 <div className="w-full">
-                  <div className="flex gap-1 items-center text-sm mb-1">
-                    <Link
-                      href={`/home/profile/${post.profiles.username}`}
-                      className="text-white font-bold hover:underline"
-                    >
-                      {post.profiles.name}
-                    </Link>
-                    <OwnerBadge isOwner={post.profiles.is_owner} size="sm" />
-                    <Link
-                      href={`/home/profile/${post.profiles.username}`}
-                      className="text-secondary-text hover:underline"
-                    >
-                      @{post.profiles.username}
-                    </Link>
-                    <span className="text-secondary-text">
-                      {moment(post.created_at).fromNow()}
-                    </span>
+                  <div className="flex justify-between">
+                    <div className="flex gap-1 items-center text-sm flex-wrap">
+                      <Link
+                        href={`/home/profile/${post.profiles.username}`}
+                        className="text-white font-bold hover:underline"
+                      >
+                        {post.profiles.name}
+                      </Link>
+                      <OwnerBadge isOwner={post.profiles.is_owner} size="sm" />
+                      <Link
+                        href={`/home/profile/${post.profiles.username}`}
+                        className="text-secondary-text hover:underline"
+                      >
+                        @{post.profiles.username}
+                      </Link>
+                      <span className="text-secondary-text">·</span>
+                      <span className="text-secondary-text whitespace-nowrap">
+                        {moment(post.created_at).diff(moment(), 'hours') > -24 
+                          ? moment(post.created_at).fromNow(true).replace(' ago', '')
+                          : moment(post.created_at).format('MMM D')}
+                      </span>
+                    </div>
+                    {/* Always show three-dot menu */}
+                    <PostOptionsMenu
+                      tweetId={post.id}
+                      creatorId={post.profiles.id}
+                      currentUserId={session?.user.id}
+                      imagePath={post.image_path || ""}
+                    />
                   </div>
                   {post.content && (
                     <Link

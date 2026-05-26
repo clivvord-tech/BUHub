@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import { useGetComments } from "../../custom-hooks/useComment";
 import { Comment } from "../../types/types";
@@ -23,23 +24,25 @@ export default function Comments({ tweetId }: { tweetId: string }) {
             key={comment.id}
             className="px-4 py-2 flex gap-3 border-b border-border"
           >
-            <Image
-              src={comment.profiles.avatar_url}
-              alt="profile-pic"
-              width={100}
-              height={100}
-              className="w-10 h-10 object-cover rounded-full shrink-0"
-            />
+            <Link href={`/home/profile/${comment.profiles.username}`} onClick={(e) => e.stopPropagation()}>
+              <Image
+                src={comment.profiles.avatar_url}
+                alt="profile-pic"
+                width={100}
+                height={100}
+                className="w-10 h-10 object-cover rounded-full shrink-0 hover:brightness-90 transition-all"
+              />
+            </Link>
             <div className="w-full">
               <div className="flex justify-between">
                 <div className="flex gap-1 items-center text-sm flex-wrap">
-                  <span className="text-white font-bold truncate max-w-[80px] md:max-w-none">
+                  <Link href={`/home/profile/${comment.profiles.username}`} onClick={(e) => e.stopPropagation()} className="text-white font-bold hover:underline truncate max-w-[80px] md:max-w-none">
                     {comment.profiles.name}
-                  </span>
+                  </Link>
                   <OwnerBadge isOwner={comment.profiles.is_owner} size="sm" />
-                  <span className="text-secondary-text truncate max-w-[80px] md:max-w-none">
+                  <Link href={`/home/profile/${comment.profiles.username}`} onClick={(e) => e.stopPropagation()} className="text-secondary-text hover:underline truncate max-w-[80px] md:max-w-none">
                     @{comment.profiles.username}
-                  </span>
+                  </Link>
                   <span className="text-secondary-text">·</span>
                   <span className="text-secondary-text whitespace-nowrap">
                     {moment(comment.created_at).diff(moment(), 'hours') > -24 
@@ -47,20 +50,24 @@ export default function Comments({ tweetId }: { tweetId: string }) {
                       : moment(comment.created_at).format('MMM D')}
                   </span>
                 </div>
-                <PostOptionsMenu
-                  tweetId={comment.id}
-                  creatorId={comment.profiles.id}
-                  currentUserId={session?.user.id}
-                  creatorUsername={comment.profiles.username}
-                  isComment={true}
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                  <PostOptionsMenu
+                    tweetId={comment.id}
+                    creatorId={comment.profiles.id}
+                    currentUserId={session?.user.id}
+                    creatorUsername={comment.profiles.username}
+                    isComment={true}
+                  />
+                </div>
               </div>
               <div className="text-white my-2 block">{comment.content}</div>
-              <CommentActions
-                creatorId={comment.profiles.id}
-                commentId={comment.id}
-                tweetId={comment.tweet_id}
-              />
+              <div onClick={(e) => e.stopPropagation()}>
+                <CommentActions
+                  creatorId={comment.profiles.id}
+                  commentId={comment.id}
+                  tweetId={comment.tweet_id}
+                />
+              </div>
             </div>
           </div>
         );

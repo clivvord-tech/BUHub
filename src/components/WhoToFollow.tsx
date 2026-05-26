@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../lib/SupabaseClient";
 import Link from "next/link";
 import Image from "next/image";
-import { followUser } from "../../services/follow";
+import { followUser, checkIfFollowing } from "../../services/follow";
 
 type User = {
   id: string;
@@ -15,7 +15,8 @@ type User = {
 
 export default function WhoToFollow() {
   const [users, setUsers] = useState<User[]>([]);
-  const [following, setFollowing] = useState<Set<string>>(new Set());
+  const [followingStatus, setFollowingStatus] = useState<Record<string, boolean>>({});
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     loadSuggestions();
@@ -25,6 +26,7 @@ export default function WhoToFollow() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // Get users the current user is already following
     const { data: followingData } = await supabase
       .from("follows")
       .select("following_id")
@@ -32,21 +34,46 @@ export default function WhoToFollow() {
 
     const followingIds = followingData?.map(f => f.following_id) || [];
 
+    // Get suggested users (not following yet, excluding self)
     const { data } = await supabase
       .from("profiles")
       .select("id, username, name, avatar_url, is_owner")
       .neq("id", user.id)
-      .not("id", "in", `(${followingIds.join(",")})`)
-      .limit(3);
+      .limit(10);
 
     if (data) {
-      setUsers(data);
+      // Filter out users already following
+      const suggestions = data.filter(u => !followingIds.includes(u.id)).slice(0, 3);
+      setUsers(suggestions);
+      
+      // Initialize following status for each user
+      const status: Record<string, boolean> = {};
+      for (const suggestedUser of suggestions) {
+        status[suggestedUser.id] = await checkIfFollowing(suggestedUser.id);
+      }
+      setFollowingStatus(status);
     }
   };
 
   const handleFollow = async (userId: string) => {
-    await followUser(userId);
-    setFollowing(prev => new Set(prev).add(userId));
+    setLoadingStates(prev => ({ ...prev, [userId]: true }));
+    
+    const result = await followUser(userId);
+    
+    if (result.success) {
+      // Update local state
+      setFollowingStatus(prev => ({ ...prev, [userId]: true }));
+      
+      // Reload suggestions after a short delay
+      setTimeout(() => {
+        loadSuggestions();
+      }, 500);
+    } else {
+      console.error("Follow failed:", result.error);
+      alert(result.error || "Failed to follow user");
+    }
+    
+    setLoadingStates(prev => ({ ...prev, [userId]: false }));
   };
 
   if (users.length === 0) return null;
@@ -70,13 +97,17 @@ export default function WhoToFollow() {
                 <p className="text-secondary-text text-sm truncate">@{user.username}</p>
               </div>
             </Link>
-            {!following.has(user.id) && (
+            {!followingStatus[user.id] && (
               <button
                 onClick={() => handleFollow(user.id)}
-                className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-200 transition-colors"
+                disabled={loadingStates[user.id]}
+                className="bg-white text-black px-4 py-1 rounded-full font-bold text-sm hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Follow
+                {loadingStates[user.id] ? "..." : "Follow"}
               </button>
+            )}
+            {followingStatus[user.id] && (
+              <span className="text-secondary-text text-sm">Following</span>
             )}
           </div>
         ))}

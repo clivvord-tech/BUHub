@@ -28,6 +28,15 @@ export type Tweet = {
     is_owner: boolean;
     role: UserRole;
   };
+  // Repost metadata
+  reposted_by?: {
+    id: string;
+    name: string;
+    username: string;
+    avatar_url: string;
+    is_owner: boolean;
+  };
+  repost_created_at?: string;
 };
 
 export type Comment = {

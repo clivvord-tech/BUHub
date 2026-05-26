@@ -74,11 +74,8 @@ export default function Posts() {
               <span>Pinned post</span>
             </div>
           )}
-          <div
-            onClick={() => window.location.href = `/home/post/${tweet.id}`}
-            className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors cursor-pointer"
-          >
-            <Link href={`/home/profile/${tweet.profiles.username}`}>
+          <div className="px-4 py-2 flex gap-3 border-b border-border hover:bg-hover transition-colors">
+            <Link href={`/home/profile/${tweet.profiles.username}`} onClick={(e) => e.stopPropagation()}>
               <Image
                 src={tweet.profiles.avatar_url}
                 alt="profile-pic"
@@ -90,11 +87,11 @@ export default function Posts() {
             <div className="w-full">
               <div className="flex justify-between">
                 <div className="flex gap-1 items-center text-sm flex-wrap">
-                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-white font-bold hover:underline truncate max-w-[80px] md:max-w-none">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} onClick={(e) => e.stopPropagation()} className="text-white font-bold hover:underline truncate max-w-[80px] md:max-w-none">
                     {tweet.profiles.name}
                   </Link>
                   <OwnerBadge isOwner={tweet.profiles.is_owner} size="sm" />
-                  <Link href={`/home/profile/${tweet.profiles.username}`} className="text-secondary-text hover:underline truncate max-w-[80px] md:max-w-none">
+                  <Link href={`/home/profile/${tweet.profiles.username}`} onClick={(e) => e.stopPropagation()} className="text-secondary-text hover:underline truncate max-w-[80px] md:max-w-none">
                     @{tweet.profiles.username}
                   </Link>
                   <span className="text-secondary-text">·</span>
@@ -104,24 +101,25 @@ export default function Posts() {
                       : moment(tweet.created_at).format('MMM D')}
                   </span>
                 </div>
-                <PostOptionsMenu
-                  tweetId={tweet.id}
-                  creatorId={tweet.profiles.id}
-                  currentUserId={session?.user.id}
-                  imagePath={tweet.image_path}
-                  creatorUsername={tweet.profiles.username}
-                  isPinned={tweet.is_pinned}
-                />
+                <div onClick={(e) => e.stopPropagation()}>
+                  <PostOptionsMenu
+                    tweetId={tweet.id}
+                    creatorId={tweet.profiles.id}
+                    currentUserId={session?.user.id}
+                    imagePath={tweet.image_path}
+                    creatorUsername={tweet.profiles.username}
+                    isPinned={tweet.is_pinned}
+                  />
+                </div>
               </div>
-              {tweet.content && (
-                <Link
-                  href={`/home/post/${tweet.id}`}
-                  className="text-white my-2 block hover:brightness-110"
-                  dangerouslySetInnerHTML={{ __html: linkifyContent(tweet.content) }}
-                />
-              )}
-              {tweet.image_url && (
-                <Link href={`/home/post/${tweet.id}`}>
+              <div onClick={() => window.location.href = `/home/post/${tweet.id}`} className="cursor-pointer">
+                {tweet.content && (
+                  <div
+                    className="text-white my-2 hover:brightness-110"
+                    dangerouslySetInnerHTML={{ __html: linkifyContent(tweet.content) }}
+                  />
+                )}
+                {tweet.image_url && (
                   <Image
                     src={tweet.image_url}
                     alt="post-image"
@@ -129,15 +127,17 @@ export default function Posts() {
                     height={1800}
                     className="h-70 md:h-130 w-full rounded-lg border border-border object-cover hover:brightness-95 transition-all"
                   />
-                </Link>
-              )}
-              <TweetActions
-                creatorId={tweet.profiles.id}
-                tweetId={tweet.id}
-                imagePath={tweet.image_path}
-                isTweetPostViewPage={false}
-                isPinned={tweet.is_pinned}
-              />
+                )}
+              </div>
+              <div onClick={(e) => e.stopPropagation()}>
+                <TweetActions
+                  creatorId={tweet.profiles.id}
+                  tweetId={tweet.id}
+                  imagePath={tweet.image_path}
+                  isTweetPostViewPage={false}
+                  isPinned={tweet.is_pinned}
+                />
+              </div>
             </div>
           </div>
         </div>
