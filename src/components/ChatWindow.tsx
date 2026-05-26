@@ -80,7 +80,7 @@ export default function ChatWindow({ conversationId, onBack, onMessageSent }: Ch
             .single();
           
           if (data) {
-            setMessages(prev => [...prev, data as Message]);
+            setMessages(prev => [...prev, data as any]);
             markAsRead(conversationId);
           }
         }
