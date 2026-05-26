@@ -24,7 +24,7 @@ export default function Layout({
         <MobileBottomNav />
         
         {/* Main Content */}
-        <div className="mr-2 md:mr-10 xl:mr-110 lg:ml-100 ml-0 lg:ml-12 min-h-screen border-x border-border mb-16 lg:mb-0 mt-14 lg:mt-0">
+        <div className="w-full lg:w-auto lg:ml-100 min-h-screen border-x border-border mb-16 lg:mb-0 mt-14 lg:mt-0">
           {children}
         </div>
         

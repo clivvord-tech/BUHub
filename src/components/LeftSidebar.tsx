@@ -30,7 +30,7 @@ export default function LeftSidebar() {
   };
 
   return (
-    <aside className='fixed left-0 top-0 w-[50px] lg:w-[400px] p-1 lg:p-4 h-screen lg:pl-30'>
+    <aside className='hidden lg:block fixed left-0 top-0 lg:w-[400px] p-4 h-screen lg:pl-30'>
         <div className='mb-6 text-primary flex items-center justify-center lg:justify-start'>
             <div className='font-bold text-2xl'>BH</div>
         </div>
