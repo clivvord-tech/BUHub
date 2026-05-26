@@ -29,6 +29,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isFollowLoading, setIsFollowLoading] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   const [isHoveringFollow, setIsHoveringFollow] = useState(false);
 
   const isOwnProfile = currentUser?.id === profile?.id;
