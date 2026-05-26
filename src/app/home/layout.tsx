@@ -20,10 +20,10 @@ export default function Layout({
         <MobileSideDrawer isOpen={isMobileDrawerOpen} onClose={() => setIsMobileDrawerOpen(false)} />
         <MobileBottomNav />
         
-        {/* Centered Container - Max width like X */}
-        <div className="max-w-[1280px] mx-auto">
+        {/* Centered Container Wrapper - Matches X's centered layout */}
+        <div className="max-w-[1280px] mx-auto px-0 lg:px-0">
           {/* Desktop Layout Container */}
-          <div className="flex min-h-screen">
+          <div className="flex min-h-screen relative">
             {/* Left Sidebar - Hidden on mobile */}
             <LeftSidebar />
             

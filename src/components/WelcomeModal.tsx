@@ -33,46 +33,38 @@ export default function WelcomeModal() {
         </div>
         
         <div className="p-6 space-y-4 text-white">
-          <p className="text-lg">Hey everyone! 👋</p>
+          <p className="text-lg">Welcome to BinghamHub! 👋</p>
           
           <p>
-            I'm excited to have you here as we launch BinghamHub - our very own social network for Bingham University!
-          </p>
-          
-          <p>
-            I want to be transparent with you all: you'll notice that several features like Explore, Notifications, Messages, Communities, and Profile pages are marked as "Coming Soon." These features are currently locked as they're still under active development.
+            Your exclusive social network for Bingham University students. Connect, share, and engage with your campus community.
           </p>
           
           <div className="bg-hover p-4 rounded-lg">
-            <p className="font-bold mb-2">What's working right now:</p>
+            <p className="font-bold mb-2">What you can do:</p>
             <ul className="space-y-1 text-sm">
-              <li>✅ Creating posts with text and images</li>
-              <li>✅ Liking and commenting on posts</li>
-              <li>✅ Real-time feed with infinite scroll</li>
-              <li>✅ Secure authentication for @binghamuni.edu.ng emails</li>
+              <li>✅ Create posts with text and images</li>
+              <li>✅ Like and comment on posts</li>
+              <li>✅ Follow other students and staff</li>
+              <li>✅ Search for users and posts</li>
+              <li>✅ Bookmark your favorite posts</li>
+              <li>✅ Get real-time notifications</li>
             </ul>
           </div>
           
           <div className="bg-hover p-4 rounded-lg">
-            <p className="font-bold mb-2">What's coming soon:</p>
+            <p className="font-bold mb-2">Coming soon:</p>
             <ul className="space-y-1 text-sm">
-              <li>🔜 User profiles and profile pages</li>
-              <li>🔜 Notifications system</li>
               <li>🔜 Direct messaging</li>
-              <li>🔜 Explore and search functionality</li>
+              <li>🔜 Communities and groups</li>
+              <li>🔜 Premium features</li>
+              <li>🔜 Enhanced explore page</li>
               <li>🔜 And much more!</li>
             </ul>
           </div>
           
           <p>
-            I'm working hard to bring you the complete experience, and I appreciate your patience as we build this together. Your feedback during this early phase is invaluable!
+            Start by completing your profile, then dive into the feed to see what's happening on campus. Share your thoughts, connect with classmates, and be part of the conversation!
           </p>
-          
-          <p>
-            Feel free to test out the current features and let me know if you encounter any issues or have suggestions.
-          </p>
-          
-          <p className="text-lg">Thank you for being part of this journey! 🚀</p>
           
           <div className="pt-4 border-t border-border">
             <p className="font-bold">- Nnamani Daniel</p>

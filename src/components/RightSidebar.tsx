@@ -1,12 +1,58 @@
 "use client";
-import React from 'react'
-import { usePathname } from 'next/navigation'
+import React, { useState, useEffect, useRef } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { IoSearchOutline } from 'react-icons/io5'
+import { FaUser } from 'react-icons/fa6'
+import { BiMessageSquareDetail } from 'react-icons/bi'
 import TrendingHashtags from './TrendingHashtags'
 import WhoToFollow from './WhoToFollow'
+import { searchAll, SearchResult } from '../../services/search'
+import Image from 'next/image'
 
 export default function RightSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const delaySearch = setTimeout(async () => {
+      if (searchQuery.trim()) {
+        setIsSearching(true);
+        const results = await searchAll(searchQuery);
+        setSearchResults(results);
+        setIsSearching(false);
+        setShowResults(true);
+      } else {
+        setSearchResults([]);
+        setShowResults(false);
+      }
+    }, 300);
+    return () => clearTimeout(delaySearch);
+  }, [searchQuery]);
+
+  const handleResultClick = (result: SearchResult) => {
+    if (result.type === 'user') {
+      router.push(`/home/profile/${result.username}`);
+    } else {
+      router.push(`/home/post/${result.id}`);
+    }
+    setShowResults(false);
+    setSearchQuery('');
+  };
   
   // Determine page type
   const isHomePage = pathname === '/home' || pathname === '/';
@@ -45,22 +91,84 @@ export default function RightSidebar() {
     </div>
   );
 
+  // Welcome Panel Component (for homepage only)
+  const WelcomePanel = () => (
+    <div className='border border-border p-4 text-white mt-5 rounded-lg'>
+      <h3 className='font-bold text-xl mb-3'>Welcome to BinghamHub!</h3>
+      <p className='text-secondary-text text-sm'>
+        Connect with Bingham University students. Share updates, engage with posts, and build your campus community.
+      </p>
+    </div>
+  );
+
   return (
-    <aside className='hidden xl:block fixed right-0 top-0 w-[350px] h-screen p-5 overflow-y-auto'>
+    <aside className='hidden xl:block absolute right-0 top-0 w-[350px] h-screen p-5 overflow-y-auto'>
         {/* Search Bar - Always visible */}
-        <div className='text-white flex items-center gap-2 border border-border p-2 rounded-full bg-background'>
-            <IoSearchOutline className='text-secondary-text'/>
-            <input 
-              type="text" 
-              placeholder='Search (coming soon)' 
-              className='outline-none w-full bg-transparent text-white placeholder-secondary-text cursor-not-allowed'
-              disabled
-            />
+        <div ref={searchRef} className='relative'>
+          <div className='text-white flex items-center gap-2 border border-border p-2 rounded-full bg-background focus-within:border-primary'>
+              <IoSearchOutline className='text-secondary-text'/>
+              <input 
+                type="text" 
+                placeholder='Search BinghamHub' 
+                className='outline-none w-full bg-transparent text-white placeholder-secondary-text'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery && setShowResults(true)}
+              />
+          </div>
+          
+          {/* Search Results Dropdown */}
+          {showResults && (
+            <div className='absolute top-full mt-2 w-full bg-background border border-border rounded-lg shadow-lg max-h-[400px] overflow-y-auto z-50'>
+              {isSearching ? (
+                <div className='p-4 text-center text-secondary-text'>Searching...</div>
+              ) : searchResults.length > 0 ? (
+                <>
+                  {searchResults.map((result) => (
+                    <div
+                      key={`${result.type}-${result.id}`}
+                      onClick={() => handleResultClick(result)}
+                      className='p-3 hover:bg-hover cursor-pointer border-b border-border last:border-b-0 flex items-start gap-3'
+                    >
+                      {result.type === 'user' ? (
+                        <>
+                          <div className='relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0'>
+                            {result.avatar_url ? (
+                              <Image src={result.avatar_url} alt={result.name || ''} fill className='object-cover' />
+                            ) : (
+                              <div className='w-full h-full bg-border flex items-center justify-center'>
+                                <FaUser className='text-secondary-text' />
+                              </div>
+                            )}
+                          </div>
+                          <div className='flex-1 min-w-0'>
+                            <div className='font-bold text-white truncate'>{result.name}</div>
+                            <div className='text-secondary-text text-sm truncate'>@{result.username}</div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <BiMessageSquareDetail className='text-secondary-text mt-1 flex-shrink-0' size={20} />
+                          <div className='flex-1 min-w-0'>
+                            <div className='text-white text-sm line-clamp-2'>{result.content}</div>
+                            <div className='text-secondary-text text-xs mt-1'>by @{result.username}</div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <div className='p-4 text-center text-secondary-text'>No results found</div>
+              )}
+            </div>
+          )}
         </div>
         
-        {/* HOME PAGE: Today's News + What's happening + Who to follow */}
+        {/* HOME PAGE: Welcome + Today's News + What's happening + Who to follow */}
         {isHomePage && (
           <>
+            <WelcomePanel />
             <TodaysNewsPanel />
             <WhatsHappeningPanel />
             <div className='mt-5'>
