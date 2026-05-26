@@ -3,8 +3,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoHomeFill, GoHome } from "react-icons/go";
 import { IoSearchOutline, IoSearch } from "react-icons/io5";
-import { BiBell, BiBellSolid } from "react-icons/bi";
-import { BiEnvelope, BiEnvelopeSolid } from "react-icons/bi";
+import { BiBell } from "react-icons/bi";
+import { BiEnvelope } from "react-icons/bi";
+import { IoNotifications } from "react-icons/io5";
+import { IoMail } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { getUnreadNotificationCount } from "../../services/notification";
 
@@ -26,8 +28,8 @@ export default function MobileBottomNav() {
   const navItems = [
     { href: "/home", label: "Home", icon: GoHome, activeIcon: GoHomeFill },
     { href: "/home/explore", label: "Explore", icon: IoSearchOutline, activeIcon: IoSearch },
-    { href: "/home/notifications", label: "Notifications", icon: BiBell, activeIcon: BiBellSolid, badge: unreadCount },
-    { href: "/home/messages", label: "Messages", icon: BiEnvelope, activeIcon: BiEnvelopeSolid },
+    { href: "/home/notifications", label: "Notifications", icon: BiBell, activeIcon: IoNotifications, badge: unreadCount },
+    { href: "/home/messages", label: "Messages", icon: BiEnvelope, activeIcon: IoMail },
   ];
 
   return (
