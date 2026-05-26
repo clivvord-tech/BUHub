@@ -31,7 +31,7 @@ export default function MobileTopHeader({ onProfileClick }: MobileTopHeaderProps
         </button>
         
         <div className="flex items-center justify-center">
-          <BHLogo size={32} showText={false} />
+          <BHLogo size={40} showText={false} />
         </div>
         
         <div className="w-8"></div>

@@ -32,8 +32,8 @@ export default function LeftSidebar() {
 
   return (
     <aside className='hidden lg:flex lg:flex-col absolute left-0 top-0 w-[275px] h-screen border-r border-border p-4'>
-        <Link href="/home" className='mb-6 flex items-center justify-center lg:justify-start'>
-            <BHLogo size={36} showText={false} />
+        <Link href="/home" className='mb-6 flex items-center lg:justify-start p-3'>
+            <BHLogo size={50} showText={false} />
         </Link>
         <div className='space-y-2'>
             <Link href="/home" className='text-white flex items-center lg:gap-3 p-3 rounded-full hover:bg-hover'>

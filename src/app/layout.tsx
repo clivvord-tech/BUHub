@@ -17,8 +17,12 @@ export const metadata: Metadata = {
   title: "BinghamHub - University Social Network",
   description: "BinghamHub: A private social network for Bingham University students and staff",
   icons: {
-    icon: '/icon.png',
-    apple: '/apple-icon.png',
+    icon: [
+      { url: '/favicon.png?v=3', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192.png?v=3', sizes: '192x192', type: 'image/png' },
+    ],
+    shortcut: '/favicon.png?v=3',
+    apple: '/icon-192.png?v=3',
   },
 };
 
@@ -29,6 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png?v=3" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
       >
