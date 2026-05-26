@@ -15,21 +15,27 @@ export default function Layout({
   return (
     <>
       <QueryProvider>
-        {/* Desktop Sidebar */}
-        <LeftSidebar />
-        
         {/* Mobile Components */}
         <MobileTopHeader onProfileClick={() => setIsMobileDrawerOpen(true)} />
         <MobileSideDrawer isOpen={isMobileDrawerOpen} onClose={() => setIsMobileDrawerOpen(false)} />
         <MobileBottomNav />
         
-        {/* Main Content */}
-        <div className="w-full lg:w-auto lg:ml-100 min-h-screen border-x border-border mb-16 lg:mb-0 mt-14 lg:mt-0">
-          {children}
+        {/* Centered Container - Max width like X */}
+        <div className="max-w-[1280px] mx-auto">
+          {/* Desktop Layout Container */}
+          <div className="flex min-h-screen">
+            {/* Left Sidebar - Hidden on mobile */}
+            <LeftSidebar />
+            
+            {/* Main Content - Full width on mobile, constrained on desktop */}
+            <main className="flex-1 min-h-screen border-x border-border mb-16 lg:mb-0 mt-14 lg:mt-0 lg:ml-[275px] xl:mr-[350px]">
+              {children}
+            </main>
+            
+            {/* Right Sidebar - Hidden on mobile and tablet */}
+            <RightSidebar />
+          </div>
         </div>
-        
-        {/* Desktop Right Sidebar */}
-        <RightSidebar />
       </QueryProvider>
     </>
   );

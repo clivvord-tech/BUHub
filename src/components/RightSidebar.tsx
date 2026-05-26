@@ -1,11 +1,53 @@
+"use client";
 import React from 'react'
+import { usePathname } from 'next/navigation'
 import { IoSearchOutline } from 'react-icons/io5'
 import TrendingHashtags from './TrendingHashtags'
 import WhoToFollow from './WhoToFollow'
 
 export default function RightSidebar() {
+  const pathname = usePathname();
+  
+  // Determine page type
+  const isHomePage = pathname === '/home' || pathname === '/';
+  const isExplorePage = pathname?.startsWith('/home/explore');
+  const isNotificationsPage = pathname?.startsWith('/home/notifications');
+  const isBookmarksPage = pathname?.startsWith('/home/bookmarks');
+  const isProfilePage = pathname?.startsWith('/home/profile');
+
+  // What's Happening Panel Component
+  const WhatsHappeningPanel = () => (
+    <div className='border border-border p-4 text-white mt-5 rounded-lg'>
+      <h3 className='font-bold text-xl mb-3'>What's happening</h3>
+      <p className='text-secondary-text text-sm'>
+        Stay updated with the latest from Bingham University community.
+      </p>
+    </div>
+  );
+
+  // Today's News Panel Component
+  const TodaysNewsPanel = () => (
+    <div className='border border-border p-4 text-white mt-5 rounded-lg'>
+      <h3 className='font-bold text-xl mb-3'>Today's News</h3>
+      <p className='text-secondary-text text-sm'>
+        Trending topics and news from your campus.
+      </p>
+    </div>
+  );
+
+  // You Might Like Panel Component (for profile pages)
+  const YouMightLikePanel = () => (
+    <div className='border border-border p-4 text-white mt-5 rounded-lg'>
+      <h3 className='font-bold text-xl mb-3'>You might like</h3>
+      <p className='text-secondary-text text-sm'>
+        Discover students and staff you might want to follow.
+      </p>
+    </div>
+  );
+
   return (
-    <aside className='fixed right-0 top-0 w-[450px] p-5 h-screen pr-20 hidden xl:block'>
+    <aside className='hidden xl:block fixed right-0 top-0 w-[350px] h-screen p-5 overflow-y-auto'>
+        {/* Search Bar - Always visible */}
         <div className='text-white flex items-center gap-2 border border-border p-2 rounded-full bg-background'>
             <IoSearchOutline className='text-secondary-text'/>
             <input 
@@ -16,40 +58,66 @@ export default function RightSidebar() {
             />
         </div>
         
-        <div className='mt-5'>
-          <TrendingHashtags />
-        </div>
-
-        <div className='mt-5'>
-          <WhoToFollow />
-        </div>
-
-        <div className='border border-border p-4 text-white mt-5 rounded-lg opacity-60'>
-            <div className='flex justify-between items-center mb-2'>
-              <h3 className='font-bold text-xl'>Premium</h3>
-              <span className='text-xs bg-border px-2 py-1 rounded'>Coming Soon</span>
+        {/* HOME PAGE: Today's News + What's happening + Who to follow */}
+        {isHomePage && (
+          <>
+            <TodaysNewsPanel />
+            <WhatsHappeningPanel />
+            <div className='mt-5'>
+              <WhoToFollow />
             </div>
-            <p className='text-secondary-text text-sm'>
-              Subscribe to unlock exclusive features and support BinghamHub.
-            </p>
-        </div>
+          </>
+        )}
 
-        <div className='border border-border p-4 text-white mt-5 rounded-lg opacity-60'>
-            <div className='flex justify-between items-center mb-2'>
-              <h3 className='font-bold text-xl'>Who to follow</h3>
-              <span className='text-xs bg-border px-2 py-1 rounded'>Coming Soon</span>
+        {/* EXPLORE PAGE: Today's News + Who to follow */}
+        {isExplorePage && (
+          <>
+            <TodaysNewsPanel />
+            <div className='mt-5'>
+              <WhoToFollow />
             </div>
-            <p className='text-secondary-text text-sm'>
-              Discover and connect with other Bingham University students.
-            </p>
-        </div>
+          </>
+        )}
 
-        <div className='border border-border p-4 text-white mt-5 rounded-lg'>
-            <h3 className='font-bold text-xl mb-2'>Welcome to BinghamHub!</h3>
-            <p className='text-secondary-text text-sm'>
-              Connect with Bingham University students and staff. Share updates, engage with posts, and build your campus community.
-            </p>
-        </div>
+        {/* NOTIFICATIONS PAGE: What's happening + Who to follow */}
+        {isNotificationsPage && (
+          <>
+            <WhatsHappeningPanel />
+            <div className='mt-5'>
+              <WhoToFollow />
+            </div>
+          </>
+        )}
+
+        {/* BOOKMARKS PAGE: What's happening + Who to follow */}
+        {isBookmarksPage && (
+          <>
+            <WhatsHappeningPanel />
+            <div className='mt-5'>
+              <WhoToFollow />
+            </div>
+          </>
+        )}
+
+        {/* PROFILE PAGE: You might like + What's happening */}
+        {isProfilePage && (
+          <>
+            <YouMightLikePanel />
+            <WhatsHappeningPanel />
+          </>
+        )}
+
+        {/* DEFAULT (Settings, etc.): Trending + Who to follow */}
+        {!isHomePage && !isExplorePage && !isNotificationsPage && !isBookmarksPage && !isProfilePage && (
+          <>
+            <div className='mt-5'>
+              <TrendingHashtags />
+            </div>
+            <div className='mt-5'>
+              <WhoToFollow />
+            </div>
+          </>
+        )}
     </aside>
   )
 }
