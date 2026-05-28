@@ -226,3 +226,21 @@ export const updateTypingIndicator = async (conversationId: string, isTyping: bo
     return { error: 'Failed to update typing indicator' };
   }
 };
+
+export const markAllAsRead = async () => {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return { error: 'Not authenticated' };
+
+    const { error } = await supabase
+      .from('conversation_participants')
+      .update({ last_read_at: new Date().toISOString() })
+      .eq('user_id', user.id);
+
+    if (error) return { error: error.message };
+    return { success: true };
+  } catch (err: any) {
+    console.error('[markAllAsRead] Exception:', err);
+    return { error: 'Failed to mark all as read' };
+  }
+};
