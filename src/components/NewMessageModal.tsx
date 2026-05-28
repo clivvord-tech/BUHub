@@ -1,94 +1,70 @@
-'use client';
+"use client";
+import React, { useEffect, useState } from 'react';
+import { searchUsers, startConversation } from '../../services/messages';
 
-import { useState } from 'react';
-import Image from 'next/image';
-import { FiX, FiSearch } from 'react-icons/fi';
-
-interface NewMessageModalProps {
+type Props = {
   onClose: () => void;
-  onConversationCreated: (conversationId: string) => void;
-}
+  onCreated: (conversationId: string) => void;
+};
 
-export default function NewMessageModal({ onClose, onConversationCreated }: NewMessageModalProps) {
+export default function NewMessageModal({ onClose, onCreated }: Props) {
   const [query, setQuery] = useState('');
-  const [users, setUsers] = useState<any[]>([]);
+  const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Messaging feature removed: these handlers are no-ops to avoid runtime errors
-  const handleSearch = async (searchQuery: string) => {
-    setQuery(searchQuery);
-    // Feature removed - do not attempt to search users
-    setUsers([]);
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (query.trim().length === 0) return setResults([]);
+      doSearch(query.trim());
+    }, 300);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const doSearch = async (q: string) => {
+    setLoading(true);
+    const res: any = await searchUsers(q, 10);
+    if (res.error) {
+      console.error(res.error);
+      setResults([]);
+    } else {
+      setResults(res.data || []);
+    }
+    setLoading(false);
   };
 
-  const handleSelectUser = async (_userId: string) => {
-    // Feature removed - starting conversations is disabled
-    console.warn('Messaging feature removed; cannot start a conversation.');
+  const handleStart = async (userId: string) => {
+    const res: any = await startConversation(userId);
+    if (res.error) {
+      alert('Failed to start conversation');
+      return;
+    }
+    const convoId = res.data;
+    onCreated(convoId);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-800">
-          <h2 className="text-xl font-bold">New Message</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-800 rounded-full transition">
-            <FiX size={20} />
-          </button>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="w-full max-w-md bg-background rounded p-4">
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-lg font-bold">New Message</h3>
+          <button onClick={onClose} className="text-secondary-text">Close</button>
         </div>
-
-        {/* Search */}
-        <div className="p-4 border-b border-gray-800">
-          <div className="flex items-center gap-2 bg-gray-800 rounded-full px-4 py-2">
-            <FiSearch className="text-gray-500" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => handleSearch(e.target.value)}
-              placeholder="Search users..."
-              className="flex-1 bg-transparent outline-none"
-              autoFocus
-            />
-          </div>
-        </div>
-
-        {/* Results */}
-        <div className="flex-1 overflow-y-auto">
+        <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search users" className="w-full p-2 rounded bg-border text-white mb-2" />
+        <div className="max-h-60 overflow-y-auto">
           {loading ? (
-            <div className="flex items-center justify-center p-8">
-              <div className="text-gray-500">Searching...</div>
-            </div>
-          ) : users.length === 0 ? (
-            <div className="flex items-center justify-center p-8">
-              <div className="text-gray-500 text-center">
-                {query.trim().length < 2 ? 'Type to search users' : 'No users found'}
-              </div>
-            </div>
+            <div className="text-secondary-text p-2">Searching...</div>
+          ) : results.length === 0 ? (
+            <div className="text-secondary-text p-2">No results</div>
           ) : (
-            <div>
-              {users.map((user) => (
-                <button
-                  key={user.id}
-                  onClick={() => handleSelectUser(user.id)}
-                  className="w-full p-4 hover:bg-gray-800 transition flex items-center gap-3"
-                >
-                  <Image
-                    src={user.avatar_url || '/images/profile.jpg'}
-                    alt={user.name}
-                    width={48}
-                    height={48}
-                    className="rounded-full"
-                  />
-                  <div className="text-left">
-                    <div className="flex items-center gap-1">
-                      <span className="font-semibold">{user.name}</span>
-                      {user.is_owner && <span className="text-yellow-500">★</span>}
-                    </div>
-                    <span className="text-sm text-gray-500">@{user.username}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
+            results.map((r) => (
+              <div key={r.id} className="p-2 hover:bg-hover cursor-pointer flex items-center justify-between" onClick={() => handleStart(r.id)}>
+                <div>
+                  <div className="font-bold text-white">{r.name}</div>
+                  <div className="text-secondary-text text-sm">@{r.username}</div>
+                </div>
+                <button className="bg-white text-black px-3 py-1 rounded">Message</button>
+              </div>
+            ))
           )}
         </div>
       </div>
