@@ -6,11 +6,14 @@ import MobileTopHeader from "@/components/MobileTopHeader";
 import MobileSideDrawer from "@/components/MobileSideDrawer";
 import React, { useState } from "react";
 import QueryProvider from "../../../providers/QueryProviders";
+import { usePathname } from "next/navigation";
 
 export default function Layout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+  const pathname = usePathname();
+  const isMessagesRoute = pathname?.startsWith('/home/messages');
 
   return (
     <>
@@ -28,12 +31,12 @@ export default function Layout({
             <LeftSidebar />
             
             {/* Main Content - Full width on mobile, constrained on desktop */}
-            <main className="flex-1 min-h-screen border-x border-border mb-16 lg:mb-0 mt-14 lg:mt-0 lg:ml-[275px] xl:mr-[350px]">
+            <main className={`flex-1 min-h-screen border-x border-border mb-16 lg:mb-0 mt-14 lg:mt-0 lg:ml-[275px] ${isMessagesRoute ? '' : 'xl:mr-[350px]'}`}>
               {children}
             </main>
             
-            {/* Right Sidebar - Hidden on mobile and tablet */}
-            <RightSidebar />
+            {/* Right Sidebar - Hidden only on messages route */}
+            {!isMessagesRoute && <RightSidebar />}
           </div>
         </div>
       </QueryProvider>

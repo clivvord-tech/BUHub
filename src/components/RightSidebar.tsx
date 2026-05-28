@@ -13,6 +13,8 @@ import Image from 'next/image'
 export default function RightSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  // Hide right sidebar on messages route to avoid overlap with chat UI
+  if (pathname?.startsWith('/home/messages')) return null;
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
